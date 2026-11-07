@@ -183,7 +183,7 @@ Este endpoint es la evidencia de **H3** (latencia p95 < 300 ms) y de "registros 
   copiar `pyproject.toml`, `uv.lock`, `app/` y `artefactos/`, y correr `uv sync --frozen --no-default-groups`. Ese flag
   instala solo lo del servicio, sin pandas ni sklearn. Comando: `fastapi run app/main.py --host 0.0.0.0 --port <puerto>`.
 - Probar en local: `docker build -t fraude .` y `docker run -p 8000:8000 fraude`.
-- Desplegar gratis. Recomendado: **Hugging Face Spaces** (tipo _Docker_, puerto **7860**, 16 GB de RAM); alternativa: Render.
+- Desplegar gratis. Se usó **Render** (Hugging Face Spaces ya no permite Docker gratis): <https://fraude-tarjeta.onrender.com>.
 - ⚠️ En los planes gratuitos **el disco se borra al reiniciar**, y con él la base SQLite. Antes de sacar las evidencias,
   guarden capturas y exporten `/monitoreo` a un JSON en `docs/evidencias/`.
 - `.github/workflows/tests.yml`: GitHub Actions que corre `uv sync` y `uv run pytest` en cada push.
@@ -255,9 +255,9 @@ Tener un **plan B** para la demo (video corto o capturas) por si falla el intern
 | Reentrenamiento C v2 y evaluación contra líneas base                             | 6 nov              | Iris        | ✅     |
 | README: borrador de las secciones 4–5                                            | 6 nov              | Iris        | ✅     |
 | **Turno Iris:** `/predict`, `/categorias` y sus tests                            | 6 nov              | Iris        | ✅     |
-| **Turno Erick:** SQLite, `/monitoreo`, tests, Docker, despliegue, GitHub Actions | 7–8 nov            | Erick       |        |
+| **Turno Erick:** SQLite, `/monitoreo`, tests, Docker, despliegue, GitHub Actions | 7–8 nov            | Erick       | ✅     |
 | **Turno Anggie:** interfaz web, pruebas con usuarios externos, capturas          | 8 nov              | Anggie      |        |
-| README secciones 6–7 y H3                                                        | 8 nov              | Erick       |        |
+| README secciones 6–7 y H3                                                        | 8 nov              | Erick       | ✅     |
 | README secciones 1–3 y presentación PDF                                          | 8 nov              | Anggie      |        |
 | Ensayo con preguntas cruzadas                                                    | 8 nov (noche)      | Todos       |        |
 | **Presentación**                                                                 | **9 o 13 nov**     | Todos       |        |

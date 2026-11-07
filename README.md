@@ -7,8 +7,8 @@ Servicio que recibe las transacciones recientes de una tarjeta y devuelve, en l�
 y la decisión **aprobar / bloquear**. El modelo es una LSTM con embedding de categoría de comercio (Modelo C del
 Proyecto 1), corregida y reentrenada para producción.
 
-- **Servicio en línea:** _TODO (Erick): enlace público_
-- **Documentación interactiva de la API:** _TODO (Erick): enlace/docs_
+- **Servicio en línea:** <https://fraude-tarjeta.onrender.com> (plan gratuito: si estuvo inactivo, la primera carga tarda ~1 min)
+- **Documentación interactiva de la API:** <https://fraude-tarjeta.onrender.com/docs> · **Monitoreo:** <https://fraude-tarjeta.onrender.com/monitoreo>
 - **Presentación:** [`docs/presentacion.pdf`](docs/presentacion.pdf) _TODO (Anggie)_
 
 ---
@@ -101,7 +101,7 @@ Las hipótesis, métricas y criterios de éxito se registraron **antes de reentr
 | ----------------------------------------------------- | ------------------------------------------------- | ----------------------------------------------- | ----------- |
 | **H1:** C v2 reduce el costo frente a la línea base A | costo(C v2) ≤ 50 % de costo(A) **y** AUC-PR +0.10 | costo = **13.8 %** del de A; AUC-PR **+0.286**  | ✅ Sí       |
 | **H2:** las correcciones no empeoran el modelo        | AUC-PR(C v2) ≥ AUC-PR(C v1) − 0.01                | **+0.006**                                      | ✅ Sí       |
-| **H3:** el servicio responde a tiempo                 | latencia p95 < 300 ms                             | _TODO (Erick): medir en el servicio desplegado_ | _pendiente_ |
+| **H3:** el servicio responde a tiempo                 | latencia p95 < 300 ms                             | p95 = **1.29 ms** (p50 = 1.12 ms) en 71 predicciones del servicio desplegado | ✅ Sí |
 
 **Lectura de los resultados**
 
@@ -124,8 +124,65 @@ tráfico real se aleja de lo que vio el modelo.
 
 ## 6. Herramientas y arquitectura
 
-> _TODO (Erick)._ Diagrama del sistema: **datos → entrenamiento → servicio → monitoreo** (puede ser Mermaid aquí
-> mismo o una imagen en `docs/`), más una tabla de herramientas con el porqué de cada una.
+**Diagrama del sistema: datos → entrenamiento → servicio → monitoreo**
+
+```mermaid
+flowchart LR
+    subgraph DATOS["1 · Datos (fuera de línea)"]
+        CSV["Sparkov fraudTrain.csv<br/>1.3 M transacciones"]
+    end
+
+    subgraph ENTRENAMIENTO["2 · Entrenamiento (fuera de línea, CPU)"]
+        PIPE["entrenamiento/entrenar.py<br/>partición temporal 60/20/20<br/>C v2 · línea base A · C v1"]
+        ART[("artefactos/<br/>modelo.pt + parametros.json")]
+        REP["reportes/<br/>métricas, figuras, H1 y H2"]
+        PIPE --> ART
+        PIPE --> REP
+    end
+
+    subgraph SERVICIO["3 · Servicio (Docker en Render)"]
+        API["FastAPI<br/>POST /predict · GET /categorias<br/>GET /monitoreo · GET /health"]
+        SVC["services/prediccion.py<br/>preprocesamiento compartido (app/ml)<br/>LSTM → puntaje → decisión (umbral 0.025)"]
+        DB[("SQLite<br/>registro de predicciones")]
+        API --> SVC
+        SVC --> DB
+    end
+
+    subgraph MONITOREO["4 · Monitoreo"]
+        MON["services/monitoreo.py<br/>tasa de bloqueo, montos, categorías,<br/>latencia p50/p95 (H3)"]
+    end
+
+    USR(["Usuario / sistema de autorización<br/>página web o API"])
+
+    CSV --> PIPE
+    ART -- "se carga una vez al arrancar" --> SVC
+    USR -- "últimas transacciones de una tarjeta" --> API
+    API -- "puntaje + aprobar/bloquear" --> USR
+    DB --> MON
+    ART -- "referencia de entrenamiento" --> MON
+    MON -- "GET /monitoreo" --> API
+
+    CI["GitHub Actions<br/>pytest + docker build en cada push"] -. "valida" .-> SERVICIO
+```
+
+**Flujo de una predicción.** El cliente envía de 1 a 20 transacciones de una tarjeta. La API valida el formato (Pydantic) y
+el servicio arma la ventana de las últimas 10 con **la misma función** que usó el entrenamiento, calcula el puntaje con la
+LSTM y decide con el umbral elegido en validación. Cada predicción válida se guarda en SQLite (fecha, puntaje, decisión,
+latencia, versión del modelo, número de transacciones, y monto y categoría de la transacción evaluada) **sin datos
+personales**: el contrato no incluye número de tarjeta. `GET /monitoreo` resume ese registro y lo pone al lado de la
+referencia de entrenamiento (`parametros.json` → `referencia`) para detectar deriva.
+
+**Herramientas y por qué**
+
+| Herramienta             | Para qué                                     | Por qué esta                                                                                                                                                   |
+| ----------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **PyTorch (CPU)**       | Modelo LSTM, entrenamiento e inferencia      | Es el framework del Proyecto 1, así que el modelo se reutiliza sin reescribirlo. La versión CPU basta (5,469 parámetros, ~ms por predicción) y la imagen pesa mucho menos que con CUDA. |
+| **FastAPI**             | API HTTP (`/predict`, `/monitoreo`, …)       | Valida la entrada con Pydantic (422 automático si algo no cumple el contrato) y genera la documentación interactiva en `/docs`, que sirve para que alguien externo la pruebe sin instalar nada. |
+| **SQLite**              | Registro de predicciones para el monitoreo   | Viene con Python (`sqlite3`), no necesita un servidor aparte y alcanza para el volumen de un piloto. Si el uso crece, se cambia solo `app/repositories/` por PostgreSQL. |
+| **uv**                  | Entorno y dependencias                       | Un solo `uv.lock` garantiza las mismas versiones en local, en CI y en Docker. Los grupos separan el servicio del entrenamiento: la imagen no instala pandas ni sklearn. |
+| **Docker**              | Empaquetar el servicio                       | La misma imagen corre en cualquier computadora y en la nube; incluye solo `app/`, `artefactos/` y las dependencias del servicio.                              |
+| **Render**              | Hospedaje público del servicio               | Plan gratuito que construye el `Dockerfile` directo desde GitHub y redespliega en cada push a `main`. El servicio usa ~290 MB de los 512 MB disponibles; PyTorch se limita a un hilo para que la fracción de CPU no genere picos de latencia. Limitaciones: se duerme tras 15 min sin uso (la primera petición tarda ~1 min en despertarlo) y el disco se borra al reiniciar, por eso las evidencias se exportan a `docs/evidencias/`. Hugging Face Spaces, la primera opción, ya no permite Docker en su plan gratuito. |
+| **GitHub Actions**      | Integración continua                         | Corre `pytest` (incluye entrenar un modelo con datos sintéticos de punta a punta) y construye la imagen Docker en cada push, para no subir un cambio que rompa el servicio. |
 
 **Estructura del código** (capas con una sola responsabilidad cada una):
 
@@ -150,8 +207,34 @@ tests/                       pruebas automáticas (pytest)
 
 ## 7. Evidencias del pase a producción
 
-> _TODO (Erick + Anggie)._ Enlace al servicio, capturas de la interfaz y de `/docs`, registros reales de uso
-> (`/monitoreo`, con usuarios externos), resultado de `pytest` / GitHub Actions y la latencia p95 (H3).
+**Servicio público:** <https://fraude-tarjeta.onrender.com> · documentación interactiva en [`/docs`](https://fraude-tarjeta.onrender.com/docs) · monitoreo en [`/monitoreo`](https://fraude-tarjeta.onrender.com/monitoreo).
+
+**Documentación interactiva (`/docs`).** Cualquiera puede probar `POST /predict` desde el navegador con los ejemplos de
+[`docs/ejemplos/`](docs/ejemplos/): el ejemplo de fraude da puntaje 0.944 → **bloquear** y el legítimo da ≈ 0 → **aprobar**,
+igual que en el pipeline de entrenamiento (lo verifica `tests/test_predict.py`).
+
+![Documentación de la API](docs/evidencias/docs.png)
+
+**Registros de uso (`/monitoreo`).** Cada predicción queda registrada; el resumen exportado está en
+[`docs/evidencias/monitoreo.json`](docs/evidencias/monitoreo.json) (el disco del plan gratuito se borra al reiniciar).
+
+![Monitoreo](docs/evidencias/monitoreo.png)
+
+**Latencia (H3).** Con 71 predicciones en el servicio desplegado (los dos ejemplos), el registro da
+**p50 = 1.12 ms y p95 = 1.29 ms**, muy por debajo del criterio de 300 ms: **H3 se cumple**. Es el tiempo de procesamiento
+dentro del servicio (validar, preprocesar, LSTM y decidir), que es lo que define H3. Medido desde un cliente en Guatemala, la ida y
+vuelta completa por internet fue de ~234 ms de mediana (máximo 322 ms en 20 peticiones), y casi todo es red. Para lograrlo
+en el plan gratuito (fracción de CPU) PyTorch usa un solo hilo y el modelo se "calienta" al arrancar; sin eso, la primera
+petición tardaba ~700 ms y aparecían picos de hasta 4 s.
+
+**Pruebas automáticas.** `uv run pytest` corre 30 pruebas: contrato de la API, entradas inválidas (422), que el modelo de
+producción reproduzca los ejemplos, que entrenamiento y servicio armen la misma ventana, y el registro y monitoreo.
+GitHub Actions las corre, y construye la imagen Docker, en cada push:
+
+![GitHub Actions](docs/evidencias/github_actions.png)
+
+> _TODO (Anggie)._ Capturas de la interfaz web y registro de los usuarios externos
+> ([`docs/evidencias/pruebas_usuarios.md`](docs/evidencias/pruebas_usuarios.md)).
 
 ---
 
@@ -164,6 +247,16 @@ uv sync                          # instala dependencias (servicio + entrenamient
 uv run fastapi dev               # servicio en http://127.0.0.1:8000  (documentación en /docs)
 uv run pytest                    # pruebas (no necesitan el CSV)
 ```
+
+**Con Docker** (la misma imagen que se despliega):
+
+```bash
+docker build -t fraude .
+docker run -p 8000:8000 fraude   # http://127.0.0.1:8000/docs
+```
+
+**Desplegar en Render:** en [render.com](https://render.com), _New → Web Service_, conectar este repositorio,
+_Language: Docker_, plan _Free_ y _Health Check Path_ `/health`. Render construye el `Dockerfile` y redespliega en cada push a `main`.
 
 **Reentrenar** (opcional; el modelo entrenado ya está en `artefactos/`): descargar `fraudTrain.csv` del dataset
 [Sparkov en Kaggle](https://www.kaggle.com/datasets/kartik2112/fraud-detection) en `datos/` y correr:
@@ -181,5 +274,5 @@ Semilla fija (42); la partición y todos los ajustes se recalculan desde el CSV.
 >
 > - **Iris:** Claude Code para revisar el método del Proyecto 1 (detectó los 4 problemas de la sección 4), estructurar el
 >   pipeline de entrenamiento y redactar borradores de las secciones 4 y 5. Revisamos y ejecutamos todo el código.
-> - **Erick:** …
+> - **Erick:** Claude Code como ayuda para el desarrollo y revisión de código, así como para el despliegue de la API. También ayudó a tomar la decisión de migrar a Render debido a que Hugging Face no permite utilizar Docker en cuentas gratuitas.
 > - **Anggie:** …
