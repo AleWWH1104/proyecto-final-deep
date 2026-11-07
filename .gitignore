@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+
+# Datos: el CSV de Kaggle no se sube y la base de predicciones se genera en ejecución.
+datos/*.csv
+datos/*.db

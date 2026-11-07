@@ -1,0 +1,42 @@
+[project]
+name = "proyecto-final-deep"
+version = "0.1.0"
+description = "Servicio de puntaje de riesgo de fraude (LSTM con embedding de categoría) en producción"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi[standard]>=0.162.0",
+    "pydantic-settings>=2.6",
+    "numpy>=2.0",
+    "torch>=2.8",
+]
+
+[dependency-groups]
+# Solo para reentrenar el modelo desde el CSV (no se instala en el servicio).
+entrenamiento = [
+    "pandas>=2.2",
+    "scikit-learn>=1.5",
+    "matplotlib>=3.9",
+]
+dev = [
+    "pytest>=8.3",
+]
+
+[tool.fastapi]
+entrypoint = "app.main:app"
+
+[tool.uv]
+# En local se instala todo; la imagen de Docker usa --no-default-groups (solo el servicio).
+default-groups = ["dev", "entrenamiento"]
+
+# PyTorch solo CPU: el servicio no usa GPU y la imagen queda mucho más liviana.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
