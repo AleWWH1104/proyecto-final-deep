@@ -5,21 +5,24 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.api.dependencias import get_artefactos
-from app.api.esquemas import RespuestaPrediccion, RespuestaSalud, SolicitudPrediccion
+from app.api.dependencias import get_artefactos, get_repositorio
+from app.api.esquemas import RespuestaMonitoreo, RespuestaPrediccion, RespuestaSalud, SolicitudPrediccion
 from app.ml.cargador import ArtefactosModelo
-from app.services import prediccion
+from app.repositories.registro_predicciones import RepositorioPredicciones
+from app.services import monitoreo, prediccion
 
 router = APIRouter()
 
 Artefactos = Annotated[ArtefactosModelo, Depends(get_artefactos)]
+Repositorio = Annotated[RepositorioPredicciones, Depends(get_repositorio)]
 
 
 @router.post("/predict", response_model=RespuestaPrediccion, tags=["predicción"],
              summary="Puntaje de riesgo y decisión para la transacción más reciente de una tarjeta")
-def predecir(solicitud: SolicitudPrediccion, artefactos: Artefactos) -> RespuestaPrediccion:
+def predecir(solicitud: SolicitudPrediccion, artefactos: Artefactos,
+             repositorio: Repositorio) -> RespuestaPrediccion:
     try:
-        resultado = prediccion.predecir(solicitud.transacciones, artefactos)
+        resultado = prediccion.predecir(solicitud.transacciones, artefactos, repositorio)
     except prediccion.CategoriaDesconocidaError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
     return RespuestaPrediccion(**asdict(resultado))
@@ -29,6 +32,12 @@ def predecir(solicitud: SolicitudPrediccion, artefactos: Artefactos) -> Respuest
             summary="Categorías de comercio que acepta el modelo")
 def categorias(artefactos: Artefactos) -> list[str]:
     return prediccion.categorias_validas(artefactos)
+
+
+@router.get("/monitoreo", response_model=RespuestaMonitoreo, tags=["monitoreo"],
+            summary="Uso real del servicio comparado con la referencia de entrenamiento")
+def resumen_monitoreo(artefactos: Artefactos, repositorio: Repositorio) -> RespuestaMonitoreo:
+    return RespuestaMonitoreo(**asdict(monitoreo.resumir(repositorio, artefactos)))
 
 
 @router.get("/health", response_model=RespuestaSalud, tags=["sistema"])

@@ -37,6 +37,26 @@ class RespuestaPrediccion(BaseModel):
     latencia_ms: float
 
 
+class PrediccionReciente(BaseModel):
+    id: int
+    fecha: str = Field(description="Momento en que se hizo la predicción (UTC, ISO 8601).")
+    puntaje: float
+    decision: Literal["aprobar", "bloquear"]
+
+
+class RespuestaMonitoreo(BaseModel):
+    total_predicciones: int
+    tasa_bloqueo: float | None = Field(description="Fracción de predicciones bloqueadas.")
+    tasa_bloqueo_referencia: float | None = Field(description="Tasa de bloqueo en validación.")
+    monto_mediana: float | None
+    monto_mediana_referencia: float | None = Field(description="Mediana de montos en entrenamiento.")
+    latencia_p50_ms: float | None
+    latencia_p95_ms: float | None = Field(description="Evidencia de H3: debe ser < 300 ms.")
+    frecuencia_categorias: dict[str, float]
+    frecuencia_categorias_referencia: dict[str, float]
+    ultimas_predicciones: list[PrediccionReciente]
+
+
 class RespuestaSalud(BaseModel):
     estado: str
     modelo_cargado: bool
