@@ -1,0 +1,87 @@
+{
+  "version_modelo": "C-v2",
+  "fecha_entrenamiento": "2026-11-07T01:31:02+00:00",
+  "columnas_features": [
+    "log_monto",
+    "categoria",
+    "hora",
+    "log_dias",
+    "es_real"
+  ],
+  "longitud_secuencia": 10,
+  "cat2cod": {
+    "entertainment": 1,
+    "food_dining": 2,
+    "gas_transport": 3,
+    "grocery_net": 4,
+    "grocery_pos": 5,
+    "health_fitness": 6,
+    "home": 7,
+    "kids_pets": 8,
+    "misc_net": 9,
+    "misc_pos": 10,
+    "personal_care": 11,
+    "shopping_net": 12,
+    "shopping_pos": 13,
+    "travel": 14
+  },
+  "escalado": {
+    "media": [
+      3.532091616535879,
+      12.804388146605742,
+      0.27792882815839115
+    ],
+    "desviacion": [
+      1.2891429831059529,
+      6.815612573396129,
+      0.2850091457678726
+    ]
+  },
+  "arquitectura": {
+    "n_features": 5,
+    "n_categorias": 15,
+    "dim_embedding": 4,
+    "hidden_size": 32,
+    "indice_categoria": 1,
+    "padding_idx": 0
+  },
+  "entrenamiento": {
+    "dim_embedding": 4,
+    "hidden_size": 32,
+    "epocas": 10,
+    "batch_size": 256,
+    "lr": 0.001,
+    "semilla": 42
+  },
+  "umbral_operativo": 0.025,
+  "costos": {
+    "fraude_no_detectado": 4200.0,
+    "bloqueo_legitimo": 180.0
+  },
+  "particion": {
+    "corte_validacion": "2019-11-29 19:37:13",
+    "corte_prueba": "2020-03-06 07:16:43"
+  },
+  "referencia": {
+    "monto_mediana": 47.41,
+    "monto_p95": 196.15,
+    "frecuencia_categorias": {
+      "entertainment": 0.07239028026812167,
+      "food_dining": 0.07095198616975469,
+      "gas_transport": 0.10152891048258045,
+      "grocery_net": 0.0348995186406257,
+      "grocery_pos": 0.09516391282832373,
+      "health_fitness": 0.06613068039408487,
+      "home": 0.09486571423062834,
+      "kids_pets": 0.08738504251258025,
+      "misc_net": 0.04881716698478802,
+      "misc_pos": 0.06135950283095867,
+      "personal_care": 0.07023862314509546,
+      "shopping_net": 0.07510491577817623,
+      "shopping_pos": 0.08988245576827912,
+      "travel": 0.03128128996600279
+    },
+    "puntaje_mediana_val": 3.110530144567747e-07,
+    "tasa_bloqueo_val": 0.006798156824184934
+  }
+}

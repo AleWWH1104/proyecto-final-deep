@@ -1,0 +1,65 @@
+{
+  "descripcion": "Transacción legítima real del conjunto de prueba (Sparkov). La última es la que se evalúa.",
+  "etiqueta_real": "legitima",
+  "puntaje_esperado": 0.0,
+  "decision_esperada": "aprobar",
+  "solicitud": {
+    "transacciones": [
+      {
+        "monto": 106.1,
+        "categoria": "grocery_pos",
+        "fecha_hora": "2020-05-04T01:07:31"
+      },
+      {
+        "monto": 16.36,
+        "categoria": "entertainment",
+        "fecha_hora": "2020-05-04T07:01:22"
+      },
+      {
+        "monto": 98.93,
+        "categoria": "personal_care",
+        "fecha_hora": "2020-05-04T15:44:10"
+      },
+      {
+        "monto": 61.86,
+        "categoria": "gas_transport",
+        "fecha_hora": "2020-05-05T00:00:27"
+      },
+      {
+        "monto": 83.01,
+        "categoria": "grocery_pos",
+        "fecha_hora": "2020-05-05T00:44:14"
+      },
+      {
+        "monto": 67.78,
+        "categoria": "grocery_pos",
+        "fecha_hora": "2020-05-05T03:46:48"
+      },
+      {
+        "monto": 105.85,
+        "categoria": "kids_pets",
+        "fecha_hora": "2020-05-05T15:44:13"
+      },
+      {
+        "monto": 51.88,
+        "categoria": "food_dining",
+        "fecha_hora": "2020-05-05T23:53:06"
+      },
+      {
+        "monto": 41.32,
+        "categoria": "food_dining",
+        "fecha_hora": "2020-05-06T01:22:55"
+      },
+      {
+        "monto": 6.14,
+        "categoria": "misc_pos",
+        "fecha_hora": "2020-05-07T03:52:58"
+      },
+      {
+        "monto": 61.06,
+        "categoria": "shopping_net",
+        "fecha_hora": "2020-05-07T04:59:34"
+      }
+    ]
+  }
+}

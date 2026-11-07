@@ -1,0 +1,222 @@
+{
+  "version_modelo": "C-v2",
+  "datos": {
+    "transacciones": 1296675,
+    "tarjetas": 983,
+    "tasa_fraude": 0.005788651743883394,
+    "n_train": 778005,
+    "n_val": 259335,
+    "n_test": 259335,
+    "corte_validacion": "2019-11-29 19:37:13",
+    "corte_prueba": "2020-03-06 07:16:43"
+  },
+  "historial_entrenamiento": [
+    {
+      "epoca": 1,
+      "perdida_train": 0.021911367191193236,
+      "perdida_val": 0.00702557573094964,
+      "auc_pr_val": 0.8633631132400674
+    },
+    {
+      "epoca": 2,
+      "perdida_train": 0.006077808449826271,
+      "perdida_val": 0.004113661590963602,
+      "auc_pr_val": 0.9344546433236189
+    },
+    {
+      "epoca": 3,
+      "perdida_train": 0.003653638241230761,
+      "perdida_val": 0.002694803988561034,
+      "auc_pr_val": 0.9704636137540298
+    },
+    {
+      "epoca": 4,
+      "perdida_train": 0.002623688665830483,
+      "perdida_val": 0.002365686232224107,
+      "auc_pr_val": 0.975970066948726
+    },
+    {
+      "epoca": 5,
+      "perdida_train": 0.002107096450515085,
+      "perdida_val": 0.0019293964141979814,
+      "auc_pr_val": 0.9828808438007127
+    },
+    {
+      "epoca": 6,
+      "perdida_train": 0.0018011054518682582,
+      "perdida_val": 0.001974197570234537,
+      "auc_pr_val": 0.9829000946497813
+    },
+    {
+      "epoca": 7,
+      "perdida_train": 0.0015749830481035496,
+      "perdida_val": 0.001526147942058742,
+      "auc_pr_val": 0.9873645344668968
+    },
+    {
+      "epoca": 8,
+      "perdida_train": 0.0013602559462957034,
+      "perdida_val": 0.0014967982424423099,
+      "auc_pr_val": 0.9881487370972866
+    },
+    {
+      "epoca": 9,
+      "perdida_train": 0.0012149492102394924,
+      "perdida_val": 0.0015212113503366709,
+      "auc_pr_val": 0.9880363758868564
+    },
+    {
+      "epoca": 10,
+      "perdida_train": 0.0010406467971817385,
+      "perdida_val": 0.0014594562817364931,
+      "auc_pr_val": 0.9865227126536998
+    }
+  ],
+  "resultados": {
+    "C_v2": {
+      "umbral": 0.025,
+      "validacion": {
+        "auc_pr": 0.9881487370972866,
+        "umbral": 0.025,
+        "precision": 0.7731140102098696,
+        "recall": 0.9855386840202458,
+        "f1": 0.866497139224412,
+        "fraudes_detectados": 1363,
+        "fraudes_no_detectados": 20,
+        "bloqueos_legitimos": 400,
+        "tasa_bloqueo": 0.006798156824184934,
+        "costo": 156000.0
+      },
+      "prueba": {
+        "auc_pr": 0.9890901359141124,
+        "umbral": 0.025,
+        "precision": 0.771545130035696,
+        "recall": 0.9837451235370611,
+        "f1": 0.8648185195770219,
+        "fraudes_detectados": 1513,
+        "fraudes_no_detectados": 25,
+        "bloqueos_legitimos": 448,
+        "tasa_bloqueo": 0.00756164806138778,
+        "costo": 185640.0
+      },
+      "prueba_umbral_0_5": {
+        "umbral": 0.5,
+        "precision": 0.984869325997249,
+        "recall": 0.9310793237971391,
+        "f1": 0.9572192513368983,
+        "fraudes_detectados": 1432,
+        "fraudes_no_detectados": 106,
+        "bloqueos_legitimos": 22,
+        "tasa_bloqueo": 0.0056066477721865545,
+        "costo": 449160.0
+      }
+    },
+    "sin_modelo": {
+      "prueba": {
+        "costo": 6459600.0,
+        "fraudes_no_detectados": 1538
+      }
+    },
+    "A": {
+      "umbral": 0.04,
+      "validacion": {
+        "auc_pr": 0.694910534790613,
+        "umbral": 0.04,
+        "precision": 0.379242819843342,
+        "recall": 0.8402024584237165,
+        "f1": 0.5225995052844613,
+        "fraudes_detectados": 1162,
+        "fraudes_no_detectados": 221,
+        "bloqueos_legitimos": 1902,
+        "tasa_bloqueo": 0.011814834094896563,
+        "costo": 1270560.0
+      },
+      "prueba": {
+        "auc_pr": 0.702801865755753,
+        "umbral": 0.04,
+        "precision": 0.38509133765468473,
+        "recall": 0.8498049414824448,
+        "f1": 0.5300081103000811,
+        "fraudes_detectados": 1307,
+        "fraudes_no_detectados": 231,
+        "bloqueos_legitimos": 2087,
+        "tasa_bloqueo": 0.01308731949023464,
+        "costo": 1345860.0
+      },
+      "prueba_umbral_0_5": {
+        "umbral": 0.5,
+        "precision": 0.8251121076233184,
+        "recall": 0.5981794538361509,
+        "f1": 0.6935544666415379,
+        "fraudes_detectados": 920,
+        "fraudes_no_detectados": 618,
+        "bloqueos_legitimos": 195,
+        "tasa_bloqueo": 0.004299458229702894,
+        "costo": 2630700.0
+      }
+    },
+    "C_v1": {
+      "umbral": 0.045,
+      "validacion": {
+        "auc_pr": 0.9792784800773112,
+        "umbral": 0.045,
+        "precision": 0.7161874334398296,
+        "recall": 0.9725234996384671,
+        "f1": 0.8249003373198404,
+        "fraudes_detectados": 1345,
+        "fraudes_no_detectados": 38,
+        "bloqueos_legitimos": 533,
+        "tasa_bloqueo": 0.007241598704378506,
+        "costo": 255540.0
+      },
+      "prueba": {
+        "auc_pr": 0.9826791787519329,
+        "umbral": 0.045,
+        "precision": 0.7304516755706654,
+        "recall": 0.9778933680104032,
+        "f1": 0.8362524325827079,
+        "fraudes_detectados": 1504,
+        "fraudes_no_detectados": 34,
+        "bloqueos_legitimos": 555,
+        "tasa_bloqueo": 0.007939537663639694,
+        "costo": 242700.0
+      },
+      "prueba_umbral_0_5": {
+        "umbral": 0.5,
+        "precision": 0.971830985915493,
+        "recall": 0.9421326397919376,
+        "f1": 0.9567514031033345,
+        "fraudes_detectados": 1449,
+        "fraudes_no_detectados": 89,
+        "bloqueos_legitimos": 42,
+        "tasa_bloqueo": 0.005749320377118399,
+        "costo": 381360.0
+      },
+      "prueba_umbral_original": {
+        "umbral": 0.06,
+        "precision": 0.7897787144362487,
+        "recall": 0.9746423927178154,
+        "f1": 0.8725261932479628,
+        "fraudes_detectados": 1499,
+        "fraudes_no_detectados": 39,
+        "bloqueos_legitimos": 399,
+        "tasa_bloqueo": 0.007318719031368693,
+        "costo": 235620.0
+      }
+    }
+  },
+  "hipotesis": {
+    "H1": {
+      "razon_costo": 0.13793410904551737,
+      "mejora_auc_pr": 0.28628827015835945,
+      "criterio": "razon_costo <= 0.5 y mejora_auc_pr >= 0.1",
+      "cumple": true
+    },
+    "H2": {
+      "diferencia_auc_pr": 0.0064109571621795425,
+      "criterio": "diferencia_auc_pr >= -0.01",
+      "cumple": true
+    }
+  },
+  "duracion_segundos": 201.8
+}
