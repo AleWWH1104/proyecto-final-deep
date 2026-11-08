@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Monitoreo del servicio</title>
+    <style>
+        :root {
+            --fondo: #f5f6f8;
+            --tarjeta: #ffffff;
+            --texto: #1d2330;
+            --suave: #5b6475;
+            --borde: #d9dde4;
+            --primario: #1f5fbf;
+            --referencia: #9aa3b2;
+            --aprobar: #1b7f3b;
+            --bloquear: #b3261e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: var(--fondo);
+            color: var(--texto);
+            line-height: 1.5;
+        }
+        main { max-width: 920px; margin: 0 auto; padding: 24px 16px 48px; }
+        h1 { margin: 0 0 4px; font-size: 1.6rem; }
+        header p { margin: 0 0 8px; color: var(--suave); }
+        nav a { color: var(--primario); margin-right: 16px; font-size: 0.95rem; }
+        section {
+            background: var(--tarjeta);
+            border: 1px solid var(--borde);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        h2 { margin: 0 0 8px; font-size: 1.15rem; }
+        .ayuda { color: var(--suave); font-size: 0.92rem; margin: 0 0 12px; }
+        .indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+        .indicador { border: 1px solid var(--borde); border-radius: 8px; padding: 12px; }
+        .indicador .nombre { color: var(--suave); font-size: 0.85rem; }
+        .indicador .valor { font-size: 1.6rem; font-weight: 700; }
+        .indicador .ref { color: var(--suave); font-size: 0.85rem; }
+        .ok { color: var(--aprobar); }
+        .alerta { color: var(--bloquear); }
+        .barra-fila { display: grid; grid-template-columns: 170px 1fr 56px; gap: 8px; align-items: center; margin: 4px 0; font-size: 0.9rem; }
+        .barras { display: flex; flex-direction: column; gap: 2px; }
+        .barra { height: 9px; border-radius: 3px; background: var(--primario); min-width: 1px; }
+        .barra.ref { background: var(--referencia); }
+        .leyenda { display: flex; gap: 16px; font-size: 0.85rem; color: var(--suave); margin-bottom: 8px; }
+        .leyenda span::before { content: ""; display: inline-block; width: 12px; height: 9px; border-radius: 2px; margin-right: 6px; background: var(--primario); }
+        .leyenda span.ref::before { background: var(--referencia); }
+        .tabla-contenedor { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 6px; border-bottom: 1px solid var(--borde); text-align: left; font-size: 0.92rem; }
+        th { color: var(--suave); font-weight: 600; }
+        .aprobar { color: var(--aprobar); font-weight: 600; }
+        .bloquear { color: var(--bloquear); font-weight: 600; }
+        #error { display: none; color: var(--bloquear); }
+        @media (max-width: 520px) {
+            .barra-fila { grid-template-columns: 110px 1fr 48px; }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <header>
+        <h1>Monitoreo del servicio</h1>
+        <p>
+            Uso real del modelo comparado con lo que vio al entrenar. Si estas cifras se alejan mucho de la referencia,
+            el tráfico cambió y habría que revisar o reentrenar el modelo.
+        </p>
+        <nav>
+            <a href="/">Volver a evaluar transacciones</a>
+            <a href="/monitoreo">Ver datos en JSON</a>
+        </nav>
+    </header>
+
+    <section id="error" role="alert"></section>
+
+    <section>
+        <h2>Resumen</h2>
+        <div class="indicadores">
+            <div class="indicador">
+                <div class="nombre">Predicciones registradas</div>
+                <div class="valor" id="total">—</div>
+            </div>
+            <div class="indicador">
+                <div class="nombre">Tasa de bloqueo</div>
+                <div class="valor" id="tasa">—</div>
+                <div class="ref" id="tasa-ref"></div>
+            </div>
+            <div class="indicador">
+                <div class="nombre">Mediana de montos</div>
+                <div class="valor" id="monto">—</div>
+                <div class="ref" id="monto-ref"></div>
+            </div>
+            <div class="indicador">
+                <div class="nombre">Latencia p95 (H3: &lt; 300 ms)</div>
+                <div class="valor" id="p95">—</div>
+                <div class="ref" id="p50"></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Categorías de comercio</h2>
+        <p class="ayuda">Frecuencia de cada categoría en las predicciones, contra la frecuencia en entrenamiento.</p>
+        <div class="leyenda"><span>Uso real</span><span class="ref">Entrenamiento</span></div>
+        <div id="categorias"></div>
+    </section>
+
+    <section>
+        <h2>Últimas predicciones</h2>
+        <div class="tabla-contenedor">
+            <table>
+                <thead><tr><th>#</th><th>Fecha (hora de Guatemala)</th><th>Puntaje</th><th>Decisión</th></tr></thead>
+                <tbody id="ultimas"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<script>
+    const NOMBRES = {
+        entertainment: "Entretenimiento", food_dining: "Restaurantes", gas_transport: "Gasolina y transporte",
+        grocery_net: "Supermercado (en línea)", grocery_pos: "Supermercado (en tienda)", health_fitness: "Salud y deporte",
+        home: "Hogar", kids_pets: "Niños y mascotas", misc_net: "Varios (en línea)", misc_pos: "Varios (en tienda)",
+        personal_care: "Cuidado personal", shopping_net: "Compras (en línea)", shopping_pos: "Compras (en tienda)",
+        travel: "Viajes",
+    };
+    const porcentaje = x => x == null ? "—" : (x * 100).toLocaleString("es-GT", { maximumFractionDigits: 2 }) + " %";
+    const quetzales = x => x == null ? "—" : "Q" + x.toLocaleString("es-GT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const ms = x => x == null ? "—" : x.toLocaleString("es-GT", { maximumFractionDigits: 2 }) + " ms";
+
+    function texto(id, valor) { document.getElementById(id).textContent = valor; }
+
+    function pintar(m) {
+        texto("total", m.total_predicciones.toLocaleString("es-GT"));
+        texto("tasa", porcentaje(m.tasa_bloqueo));
+        texto("tasa-ref", `Validación: ${porcentaje(m.tasa_bloqueo_referencia)}`);
+        texto("monto", quetzales(m.monto_mediana));
+        texto("monto-ref", `Entrenamiento: ${quetzales(m.monto_mediana_referencia)}`);
+        texto("p95", ms(m.latencia_p95_ms));
+        texto("p50", `p50: ${ms(m.latencia_p50_ms)}`);
+        const p95 = document.getElementById("p95");
+        p95.className = "valor " + (m.latencia_p95_ms == null ? "" : m.latencia_p95_ms < 300 ? "ok" : "alerta");
+
+        const cats = Object.keys({ ...m.frecuencia_categorias_referencia, ...m.frecuencia_categorias }).sort();
+        const maximo = Math.max(0.01, ...cats.map(c => Math.max(m.frecuencia_categorias[c] || 0,
+                                                                 m.frecuencia_categorias_referencia[c] || 0)));
+        document.getElementById("categorias").innerHTML = cats.map(c => {
+            const real = m.frecuencia_categorias[c] || 0;
+            const ref = m.frecuencia_categorias_referencia[c] || 0;
+            return `<div class="barra-fila" title="Uso real ${porcentaje(real)} · entrenamiento ${porcentaje(ref)}">
+                <span>${NOMBRES[c] || c}</span>
+                <div class="barras">
+                    <div class="barra" style="width:${real / maximo * 100}%"></div>
+                    <div class="barra ref" style="width:${ref / maximo * 100}%"></div>
+                </div>
+                <span>${porcentaje(real)}</span>
+            </div>`;
+        }).join("");
+
+        const ultimas = document.getElementById("ultimas");
+        ultimas.innerHTML = m.ultimas_predicciones.length === 0
+            ? `<tr><td colspan="4">Todavía no hay predicciones. Pruebe el modelo en la <a href="/">página principal</a>.</td></tr>`
+            : m.ultimas_predicciones.map(p => `<tr>
+                <td>${p.id}</td>
+                <td>${new Date(p.fecha).toLocaleString("es-GT", { timeZone: "America/Guatemala" })}</td>
+                <td>${p.puntaje.toFixed(4)}</td>
+                <td class="${p.decision}">${p.decision === "bloquear" ? "Bloquear" : "Aprobar"}</td>
+            </tr>`).join("");
+    }
+
+    fetch("/monitoreo")
+        .then(r => { if (!r.ok) throw new Error(`El servicio respondió ${r.status}.`); return r.json(); })
+        .then(pintar)
+        .catch(e => {
+            const caja = document.getElementById("error");
+            caja.textContent = "No se pudo cargar el monitoreo: " + e.message;
+            caja.style.display = "block";
+        });
+</script>
+</body>
+</html>

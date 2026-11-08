@@ -13,3 +13,8 @@ router = APIRouter(include_in_schema=False)
 @router.get("/")
 def inicio() -> FileResponse:
     return FileResponse(DIR_WEB / "index.html")
+
+
+@router.get("/monitoreo.html")
+def panel_monitoreo() -> FileResponse:
+    return FileResponse(DIR_WEB / "monitoreo.html")
