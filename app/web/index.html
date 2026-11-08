@@ -137,6 +137,15 @@
         details.porque summary::after { content: " +"; }
         details.porque[open] summary::after { content: " –"; }
         details.porque p { color: var(--suave); background: var(--naranja-claro); border-radius: 12px; padding: 12px 14px; margin: 10px 0 0; }
+        .evaluada-resumen {
+            display: inline-block; margin: 0 auto 18px; padding: 8px 14px; border-radius: 12px;
+            background: #fff; border: 1px solid var(--borde); font-size: .92rem;
+        }
+        .evaluada-resumen span { color: var(--suave); }
+        .pista {
+            max-width: 560px; margin: 18px auto 0; padding: 12px 14px; border-radius: 12px; text-align: left;
+            background: var(--naranja-claro); border-left: 4px solid var(--naranja); font-size: .93rem;
+        }
         #detalles { margin-top: 14px; font-size: .8rem; color: var(--suave); }
 
         /* ---------- Compras ---------- */
@@ -391,13 +400,27 @@
             Evaluando… si el servicio estaba dormido puede tardar hasta un minuto.</div>`;
     }
 
-    function mostrarResultado(r) {
+    // La compra que juzga el modelo es la más reciente por fecha (la misma regla que usa la API).
+    function compraEvaluada(transacciones) {
+        return transacciones.reduce((a, b) => (b.fecha_hora >= a.fecha_hora ? b : a));
+    }
+
+    function describirCompra(tx) {
+        const fecha = new Date(tx.fecha_hora);
+        const cuando = fecha.toLocaleString("es-GT", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" });
+        const monto = tx.monto.toLocaleString("es-GT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return `<b>Q${monto}</b> en ${NOMBRES[tx.categoria] || tx.categoria} <span>· ${cuando}</span>`;
+    }
+
+    function mostrarResultado(r, transacciones) {
         const bloquear = r.decision === "bloquear";
+        const evaluada = compraEvaluada(transacciones);
         const resultado = $("resultado");
         resultado.className = "tarjeta " + r.decision;
         resultado.innerHTML = `
             <div class="icono">${bloquear ? ICONO_BLOQUEAR : ICONO_APROBAR}</div>
             <p id="decision">${bloquear ? "BLOQUEAR" : "APROBAR"}</p>
+            <div class="evaluada-resumen"><span>Compra evaluada:</span> ${describirCompra(evaluada)}</div>
             <p id="frase">${bloquear
                 ? "Esta compra no se parece a las anteriores de la tarjeta. Se recomienda bloquearla y confirmar con el cliente."
                 : "Esta compra es consistente con el historial de la tarjeta. Se puede aprobar."}</p>
@@ -410,6 +433,9 @@
                 </div>
                 <div class="medidor-extremos"><span>Riesgo bajo</span><span>Riesgo alto</span></div>
             </div>
+            ${bloquear ? `<p class="pista"><b>¿Quieres ver cuándo se aprueba?</b> Quitar las compras anteriores no
+                cambia la compra evaluada. Cambia esa compra (la resaltada en la tabla): por ejemplo, ponle un monto
+                parecido a las anteriores y vuelve a evaluar.</p>` : ""}
             <details class="porque">
                 <summary>¿Por qué se bloquea desde un riesgo tan bajo?</summary>
                 <p>Dejar pasar un fraude le cuesta al banco en promedio <b>Q4,200</b>; bloquear por error a un cliente
@@ -448,7 +474,7 @@
             });
             const cuerpo = await respuesta.json().catch(() => null);
             if (!respuesta.ok) throw new Error(mensajeDeError(cuerpo, respuesta.status));
-            mostrarResultado(cuerpo);
+            mostrarResultado(cuerpo, transacciones);
         } catch (e) {
             $("resultado").className = "tarjeta";
             $("resultado").innerHTML = '<p class="vacio">No se obtuvo una decisión.</p>';
