@@ -6,244 +6,255 @@
     <title>Riesgo de fraude con tarjeta</title>
     <style>
         :root {
-            --fondo: #eef2f8;
+            --fondo: #fff8f2;
             --tarjeta: #ffffff;
-            --texto: #14213d;
-            --suave: #5b6680;
-            --borde: #dde3ee;
-            --primario: #2563eb;
-            --primario-oscuro: #1e40af;
-            --azul-noche: #0b1f3f;
-            --aprobar: #15803d;
-            --aprobar-fondo: #ecfdf3;
-            --bloquear: #c0262d;
-            --bloquear-fondo: #fef1f1;
-            --resaltado: #fff7e0;
-            --sombra: 0 1px 2px rgba(15, 31, 63, .06), 0 10px 30px rgba(15, 31, 63, .08);
+            --texto: #3b2a20;
+            --suave: #7a6558;
+            --borde: #f1dfd0;
+            --naranja: #f4a261;
+            --naranja-fuerte: #d9773a;
+            --naranja-pastel: #ffe6d1;
+            --naranja-claro: #fff1e5;
+            --aprobar: #2f7d4f;
+            --aprobar-pastel: #e2f3e8;
+            --bloquear: #b8463c;
+            --bloquear-pastel: #fde3df;
+            --sombra: 0 1px 2px rgba(120, 70, 30, .05), 0 12px 32px rgba(180, 100, 40, .10);
+            --radio: 18px;
         }
         * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             margin: 0;
             font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
             background: var(--fondo);
             color: var(--texto);
-            line-height: 1.5;
+            line-height: 1.55;
         }
+        .oculto { display: none !important; }
 
         /* ---------- Encabezado ---------- */
         .hero {
-            background: radial-gradient(circle at 85% 0%, rgba(96, 165, 250, .35), transparent 45%),
-                        linear-gradient(135deg, var(--azul-noche) 0%, #163a73 55%, var(--primario-oscuro) 100%);
-            color: #fff;
-            padding: 36px 16px 88px;
+            background: radial-gradient(circle at 90% 10%, #ffd3ad 0, transparent 40%),
+                        linear-gradient(160deg, #ffe9d6 0%, #ffd9b8 100%);
+            padding: 40px 16px 96px;
         }
-        .hero-contenido { max-width: 960px; margin: 0 auto; }
-        .insignia {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .25);
-            padding: 4px 12px; border-radius: 999px; font-size: .8rem; letter-spacing: .02em;
-        }
-        .insignia::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 3px rgba(74, 222, 128, .25); }
-        .hero h1 { margin: 14px 0 8px; font-size: clamp(1.6rem, 4vw, 2.3rem); line-height: 1.2; }
-        .hero p { margin: 0; max-width: 640px; color: #d6e2ff; font-size: 1.02rem; }
-        .hero nav { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; }
+        .hero-contenido { max-width: 920px; margin: 0 auto; }
+        .hero h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4.5vw, 2.4rem); line-height: 1.2; }
+        .hero p { margin: 0; max-width: 620px; color: #5e4636; font-size: 1.05rem; }
+        .hero nav { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
         .hero nav a {
-            color: #fff; text-decoration: none; font-size: .9rem;
-            padding: 7px 14px; border-radius: 8px;
-            background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .2);
+            color: var(--texto); text-decoration: none; font-size: .9rem; font-weight: 500;
+            padding: 7px 14px; border-radius: 999px;
+            background: rgba(255, 255, 255, .6); border: 1px solid rgba(217, 119, 58, .25);
             transition: background .15s;
         }
-        .hero nav a:hover { background: rgba(255, 255, 255, .2); }
+        .hero nav a:hover { background: #fff; }
+        .pasos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
+        .paso { display: flex; gap: 10px; align-items: flex-start; font-size: .92rem; color: #5e4636; }
+        .paso b { display: block; color: var(--texto); }
+        .paso .n {
+            flex: none; width: 28px; height: 28px; border-radius: 50%;
+            display: grid; place-items: center; font-weight: 700; font-size: .85rem;
+            background: #fff; color: var(--naranja-fuerte); box-shadow: 0 2px 6px rgba(217, 119, 58, .2);
+        }
+        @media (max-width: 640px) { .pasos { grid-template-columns: 1fr; } }
 
-        main { max-width: 960px; margin: -60px auto 0; padding: 0 16px 48px; }
-
-        /* ---------- Tarjetas ---------- */
+        main { max-width: 920px; margin: -64px auto 0; padding: 0 16px 48px; }
         section.tarjeta {
-            background: var(--tarjeta);
-            border-radius: 16px;
-            box-shadow: var(--sombra);
-            padding: 24px;
-            margin-bottom: 20px;
+            background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra);
+            padding: 24px; margin-bottom: 20px;
         }
-        .titulo-paso { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-        .titulo-paso h2 { margin: 0; font-size: 1.15rem; }
-        .numero {
-            flex: none; width: 30px; height: 30px; border-radius: 50%;
-            display: grid; place-items: center; font-weight: 700; font-size: .9rem;
-            color: #fff; background: linear-gradient(135deg, #3b82f6, var(--primario-oscuro));
-            box-shadow: 0 4px 10px rgba(37, 99, 235, .3);
-        }
-        .ayuda { color: var(--suave); font-size: .93rem; margin: 0 0 16px 42px; }
+        h2 { margin: 0 0 4px; font-size: 1.2rem; }
+        .ayuda { color: var(--suave); font-size: .94rem; margin: 0 0 16px; }
 
-        /* ---------- Botones ---------- */
-        .botones { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
-        button {
-            font: inherit; font-size: .93rem;
-            padding: 9px 16px; border-radius: 10px;
-            border: 1px solid var(--borde); background: #fff; color: var(--texto);
-            cursor: pointer; transition: transform .1s, box-shadow .15s, background .15s;
+        /* ---------- Elegir un caso ---------- */
+        .casos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 640px) { .casos { grid-template-columns: 1fr; } }
+        .caso {
+            text-align: left; font: inherit; color: inherit; cursor: pointer;
+            padding: 18px; border-radius: 14px; border: 2px solid var(--borde); background: var(--naranja-claro);
+            display: flex; gap: 14px; align-items: flex-start;
+            transition: border-color .15s, transform .15s, box-shadow .15s, background .15s;
         }
-        button:hover { background: #f4f7fc; box-shadow: 0 2px 8px rgba(15, 31, 63, .08); }
-        button:active { transform: translateY(1px); }
-        .btn-normal { border-color: #b7e4c7; background: var(--aprobar-fondo); color: var(--aprobar); font-weight: 600; }
-        .btn-normal:hover { background: #d9f6e4; }
-        .btn-sospechoso { border-color: #f5c2c4; background: var(--bloquear-fondo); color: var(--bloquear); font-weight: 600; }
-        .btn-sospechoso:hover { background: #fde0e0; }
-        .btn-evaluar {
-            width: 100%; padding: 15px 20px; font-size: 1.08rem; font-weight: 700;
-            color: #fff; border: none;
-            background: linear-gradient(135deg, #3b82f6, var(--primario-oscuro));
-            box-shadow: 0 8px 20px rgba(37, 99, 235, .35);
+        .caso:hover { border-color: var(--naranja); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(217, 119, 58, .15); }
+        .caso.activo { border-color: var(--naranja-fuerte); background: var(--naranja-pastel); }
+        .caso .figura { flex: none; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; }
+        .caso.normal .figura { background: var(--aprobar-pastel); color: var(--aprobar); }
+        .caso.sospechoso .figura { background: var(--bloquear-pastel); color: var(--bloquear); }
+        .caso b { display: block; font-size: 1.02rem; margin-bottom: 2px; color: var(--texto); }
+        .caso span { color: var(--suave); font-size: .9rem; }
+        .enlace {
+            background: none; border: none; padding: 0; margin-top: 14px; font: inherit; font-size: .93rem;
+            color: var(--naranja-fuerte); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
         }
-        .btn-evaluar:hover { background: linear-gradient(135deg, #2f74ec, #1b3a9e); box-shadow: 0 10px 24px rgba(37, 99, 235, .45); }
-        .btn-evaluar:disabled { opacity: .75; cursor: wait; }
+
+        /* ---------- Resultado ---------- */
+        #resultado { text-align: center; padding: 30px 24px; position: relative; overflow: hidden; }
+        #resultado .vacio { color: var(--suave); margin: 6px 0; }
+        #resultado.aprobar, #resultado.bloquear { animation: aparecer .35s ease-out; }
+        #resultado.aprobar { background: linear-gradient(180deg, var(--aprobar-pastel) 0, #fff 55%); }
+        #resultado.bloquear { background: linear-gradient(180deg, var(--bloquear-pastel) 0, #fff 55%); }
+        @keyframes aparecer { from { transform: translateY(8px); } to { transform: none; } }
+        .cargando { display: inline-flex; align-items: center; gap: 10px; color: var(--suave); }
         .girando {
-            display: inline-block; width: 16px; height: 16px; margin-right: 8px; vertical-align: -3px;
-            border: 2px solid rgba(255, 255, 255, .4); border-top-color: #fff; border-radius: 50%;
+            width: 20px; height: 20px; border-radius: 50%;
+            border: 3px solid var(--naranja-pastel); border-top-color: var(--naranja-fuerte);
             animation: girar .8s linear infinite;
         }
         @keyframes girar { to { transform: rotate(360deg); } }
-        button.quitar { padding: 4px 9px; border: none; background: transparent; color: #98a2b6; font-size: 1rem; }
-        button.quitar:hover { color: var(--bloquear); background: var(--bloquear-fondo); box-shadow: none; }
+        .icono {
+            width: 68px; height: 68px; margin: 0 auto 10px; border-radius: 50%;
+            display: grid; place-items: center; color: #fff;
+        }
+        .aprobar .icono { background: var(--aprobar); box-shadow: 0 8px 20px rgba(47, 125, 79, .28); }
+        .bloquear .icono { background: var(--bloquear); box-shadow: 0 8px 20px rgba(184, 70, 60, .28); }
+        #decision { font-size: 2.2rem; font-weight: 800; letter-spacing: .05em; margin: 0; }
+        .aprobar #decision { color: var(--aprobar); }
+        .bloquear #decision { color: var(--bloquear); }
+        #frase { font-size: 1.08rem; margin: 4px auto 22px; max-width: 560px; }
 
-        /* ---------- Tabla ---------- */
-        .tabla-contenedor { overflow-x: auto; border: 1px solid var(--borde); border-radius: 12px; }
+        .medidor { max-width: 540px; margin: 0 auto; text-align: left; }
+        .medidor-titulo { display: flex; justify-content: space-between; font-size: .88rem; color: var(--suave); margin-bottom: 4px; }
+        .medidor-titulo strong { color: var(--texto); }
+        .medidor-arriba { position: relative; height: 22px; font-size: .76rem; font-weight: 600; color: var(--texto); }
+        .medidor-arriba span { position: absolute; bottom: 4px; transform: translateX(-50%); white-space: nowrap; }
+        .medidor-barra {
+            position: relative; height: 12px; border-radius: 999px;
+            background: linear-gradient(90deg, #a8dcb9 0%, #ffe0a3 16%, #f9b98a 40%, #ef8e7f 100%);
+        }
+        .medidor-umbral { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--texto); border-radius: 2px; }
+        .medidor-aguja {
+            position: absolute; top: 50%; left: 0; width: 22px; height: 22px; border-radius: 50%;
+            background: #fff; border: 4px solid var(--texto); box-shadow: 0 3px 8px rgba(0, 0, 0, .2);
+            transform: translate(-50%, -50%); transition: left .7s cubic-bezier(.2, .8, .2, 1);
+        }
+        .medidor-extremos { display: flex; justify-content: space-between; font-size: .76rem; color: var(--suave); margin-top: 8px; }
+
+        details.porque { max-width: 560px; margin: 20px auto 0; text-align: left; font-size: .93rem; }
+        details.porque summary { cursor: pointer; color: var(--naranja-fuerte); font-weight: 600; text-align: center; list-style: none; }
+        details.porque summary::-webkit-details-marker { display: none; }
+        details.porque summary::after { content: " +"; }
+        details.porque[open] summary::after { content: " –"; }
+        details.porque p { color: var(--suave); background: var(--naranja-claro); border-radius: 12px; padding: 12px 14px; margin: 10px 0 0; }
+        #detalles { margin-top: 14px; font-size: .8rem; color: var(--suave); }
+
+        /* ---------- Compras ---------- */
+        .encabezado-compras { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px; margin-bottom: 14px; }
+        .encabezado-compras .ayuda { margin: 0; }
+        .tabla-contenedor { overflow-x: auto; border: 1px solid var(--borde); border-radius: 14px; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 8px 10px; text-align: left; }
-        th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--suave); background: #f6f8fc; font-weight: 600; }
-        tbody tr { border-top: 1px solid var(--borde); transition: background .15s; }
-        tbody tr:hover { background: #fafbfe; }
+        th { font-size: .76rem; text-transform: uppercase; letter-spacing: .05em; color: var(--suave); background: var(--naranja-claro); font-weight: 600; }
+        tbody tr { border-top: 1px solid var(--borde); }
         td input, td select {
-            font: inherit; font-size: .93rem; width: 100%;
-            padding: 7px 9px; border: 1px solid var(--borde); border-radius: 8px; background: #fff;
+            font: inherit; font-size: .93rem; width: 100%; color: var(--texto);
+            padding: 7px 9px; border: 1px solid var(--borde); border-radius: 9px; background: #fff;
             transition: border-color .15s, box-shadow .15s;
         }
-        td input:focus, td select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, .18); }
-        td.num { color: var(--suave); width: 3em; font-variant-numeric: tabular-nums; }
-        tr.evaluada { background: var(--resaltado); box-shadow: inset 4px 0 0 #f59e0b; }
-        tr.evaluada:hover { background: var(--resaltado); }
+        td input:focus, td select:focus { outline: none; border-color: var(--naranja); box-shadow: 0 0 0 3px rgba(244, 162, 97, .25); }
+        td.num { color: var(--suave); width: 3.2em; font-variant-numeric: tabular-nums; }
+        tr.evaluada { background: var(--naranja-pastel); box-shadow: inset 4px 0 0 var(--naranja-fuerte); }
         .etiqueta-evaluada {
-            display: none; margin-top: 2px; font-size: .68rem; font-weight: 700; color: #b45309;
+            display: none; margin-top: 2px; font-size: .66rem; font-weight: 700; color: var(--naranja-fuerte);
             text-transform: uppercase; letter-spacing: .04em; white-space: nowrap;
         }
         tr.evaluada .etiqueta-evaluada { display: block; }
+        button.quitar {
+            font: inherit; font-size: .82rem; padding: 4px 10px; border-radius: 8px; cursor: pointer;
+            border: 1px solid transparent; background: transparent; color: var(--suave);
+        }
+        button.quitar:hover { color: var(--bloquear); background: var(--bloquear-pastel); }
+        .acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+        .btn {
+            font: inherit; font-size: .95rem; font-weight: 600; cursor: pointer;
+            padding: 10px 18px; border-radius: 12px; border: 1px solid var(--borde); background: #fff; color: var(--texto);
+            transition: background .15s, box-shadow .15s, transform .1s;
+        }
+        .btn:hover { background: var(--naranja-claro); }
+        .btn:active { transform: translateY(1px); }
+        .btn.principal {
+            background: var(--naranja); border-color: var(--naranja); color: #3b2a20;
+            box-shadow: 0 6px 16px rgba(244, 162, 97, .4);
+        }
+        .btn.principal:hover { background: #f19550; }
+        .btn:disabled { opacity: .6; cursor: wait; }
 
-        /* ---------- Resultado ---------- */
-        #error {
-            display: none; color: var(--bloquear); background: var(--bloquear-fondo);
-            border: 1px solid #f5c2c4; box-shadow: none;
-        }
-        #resultado { display: none; text-align: center; padding: 32px 24px; position: relative; overflow: hidden; }
-        #resultado.aprobar, #resultado.bloquear { display: block; animation: aparecer .35s ease-out; }
-        #resultado::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 6px; }
-        #resultado.aprobar::before { background: linear-gradient(90deg, #22c55e, var(--aprobar)); }
-        #resultado.bloquear::before { background: linear-gradient(90deg, #f87171, var(--bloquear)); }
-        @keyframes aparecer { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-        .icono {
-            width: 72px; height: 72px; margin: 0 auto 8px; border-radius: 50%;
-            display: grid; place-items: center; font-size: 2.1rem; font-weight: 800; color: #fff;
-        }
-        .aprobar .icono { background: linear-gradient(135deg, #22c55e, var(--aprobar)); box-shadow: 0 10px 24px rgba(21, 128, 61, .35); }
-        .bloquear .icono { background: linear-gradient(135deg, #f87171, var(--bloquear)); box-shadow: 0 10px 24px rgba(192, 38, 45, .35); }
-        #decision { font-size: 2.4rem; font-weight: 800; letter-spacing: .06em; margin: 0; }
-        .aprobar #decision { color: var(--aprobar); }
-        .bloquear #decision { color: var(--bloquear); }
-        #puntaje { font-size: 1.1rem; margin: 2px 0 20px; color: var(--suave); }
-        #puntaje strong { color: var(--texto); font-size: 1.3rem; }
-
-        .medidor { max-width: 560px; margin: 0 auto; }
-        .medidor-barra {
-            position: relative; height: 14px; border-radius: 999px;
-            background: linear-gradient(90deg, #22c55e 0%, #84cc16 12%, #f59e0b 20%, #ef4444 45%, #b91c1c 100%);
-        }
-        .medidor-umbral { position: absolute; top: -6px; bottom: -6px; width: 2px; background: var(--texto); }
-        .medidor-aguja {
-            position: absolute; top: 50%; width: 24px; height: 24px; border-radius: 50%;
-            background: #fff; border: 4px solid var(--texto);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
-            transform: translate(-50%, -50%); transition: left .6s cubic-bezier(.2, .8, .2, 1);
-        }
-        .medidor-arriba { position: relative; height: 26px; font-size: .78rem; font-weight: 600; color: var(--texto); }
-        .medidor-arriba span { position: absolute; bottom: 6px; transform: translateX(-50%); white-space: nowrap; }
-        .medidor-etiquetas { position: relative; height: 34px; font-size: .78rem; color: var(--suave); }
-        .medidor-etiquetas span { position: absolute; top: 8px; transform: translateX(-50%); white-space: nowrap; }
-        .medidor-etiquetas span:first-child { transform: none; }
-        .medidor-etiquetas span:last-child { transform: translateX(-100%); }
-
-        #explicacion { max-width: 640px; margin: 8px auto 0; font-size: 1rem; }
-        #detalles {
-            display: inline-block; margin-top: 16px; padding: 6px 14px; border-radius: 999px;
-            background: #f1f4fa; color: var(--suave); font-size: .82rem;
-        }
-
-        footer { color: var(--suave); font-size: .85rem; text-align: center; margin-top: 8px; }
+        #error { display: none; color: var(--bloquear); background: var(--bloquear-pastel); box-shadow: none; padding: 14px 18px; }
+        footer { color: var(--suave); font-size: .84rem; text-align: center; }
     </style>
 </head>
 <body>
 <header class="hero">
     <div class="hero-contenido">
-        <span class="insignia">Modelo C-v2 · LSTM en producción</span>
         <h1>¿Esta compra con tarjeta es fraude?</h1>
         <p>
-            Un modelo de deep learning revisa las últimas compras de una tarjeta y decide, en milisegundos, si la
-            <strong>compra más reciente</strong> se debe <strong>aprobar</strong> o <strong>bloquear</strong>.
+            Un modelo de inteligencia artificial revisa las últimas compras de una tarjeta y decide si la compra más
+            reciente se debe <strong>aprobar</strong> o <strong>bloquear</strong>.
         </p>
+        <div class="pasos">
+            <div class="paso"><span class="n">1</span><div><b>Elige un caso</b>o escribe tus propias compras.</div></div>
+            <div class="paso"><span class="n">2</span><div><b>Mira la decisión</b>aprobar o bloquear, con su nivel de riesgo.</div></div>
+            <div class="paso"><span class="n">3</span><div><b>Experimenta</b>cambia una compra y vuelve a evaluar.</div></div>
+        </div>
         <nav>
-            <a href="/monitoreo.html">📊 Monitoreo del servicio</a>
-            <a href="/docs">⚙️ Documentación de la API</a>
+            <a href="/monitoreo.html">Monitoreo del servicio</a>
+            <a href="/docs">Documentación de la API</a>
         </nav>
     </div>
 </header>
 
 <main>
     <section class="tarjeta">
-        <div class="titulo-paso"><span class="numero">1</span><h2>Transacciones recientes de la tarjeta</h2></div>
-        <p class="ayuda">
-            Cargue un ejemplo real o escriba sus propias transacciones (de 1 a 20). Se evalúa la más reciente por fecha,
-            marcada en amarillo. Montos en quetzales. Las anteriores le dan contexto al modelo: el orden y el tiempo
-            entre compras importan.
-        </p>
-        <div class="botones">
-            <button type="button" class="btn-normal" id="btn-normal">✓ Cargar ejemplo normal</button>
-            <button type="button" class="btn-sospechoso" id="btn-sospechoso">⚠ Cargar ejemplo sospechoso</button>
-            <button type="button" id="btn-agregar">+ Agregar transacción</button>
-            <button type="button" id="btn-limpiar">Limpiar</button>
+        <h2>1. Elige un caso para probar</h2>
+        <p class="ayuda">Son compras reales de una base de datos de prueba. Al elegir uno, el modelo lo evalúa de inmediato.</p>
+        <div class="casos">
+            <button type="button" class="caso normal" id="caso-normal">
+                <span class="figura">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                </span>
+                <span><b>Cliente con compras normales</b>
+                    <span>11 compras habituales: supermercado, restaurantes, gasolina. La última es de Q61 en línea.</span></span>
+            </button>
+            <button type="button" class="caso sospechoso" id="caso-sospechoso">
+                <span class="figura">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg>
+                </span>
+                <span><b>Compra sospechosa</b>
+                    <span>Una semana de compras normales y, de repente, Q356 en el supermercado a las 2:34 de la madrugada.</span></span>
+            </button>
         </div>
-        <div class="tabla-contenedor">
-            <table>
-                <thead>
-                <tr><th>#</th><th>Monto (Q)</th><th>Categoría</th><th>Fecha y hora</th><th></th></tr>
-                </thead>
-                <tbody id="filas"></tbody>
-            </table>
-        </div>
-    </section>
-
-    <section class="tarjeta">
-        <div class="titulo-paso"><span class="numero">2</span><h2>Evaluar</h2></div>
-        <p class="ayuda">Si el servicio estuvo inactivo, la primera evaluación puede tardar hasta un minuto mientras despierta.</p>
-        <button type="button" class="btn-evaluar" id="btn-evaluar">Evaluar transacción más reciente</button>
+        <button type="button" class="enlace" id="caso-propio">O escribe tus propias compras</button>
     </section>
 
     <section class="tarjeta" id="error" role="alert"></section>
 
     <section class="tarjeta" id="resultado" aria-live="polite">
-        <div class="icono" id="icono"></div>
-        <p id="decision"></p>
-        <p id="puntaje"></p>
-        <div class="medidor" aria-hidden="true">
-            <div class="medidor-arriba"><span id="etiqueta-umbral">umbral</span></div>
-            <div class="medidor-barra">
-                <div class="medidor-umbral" id="medidor-umbral"></div>
-                <div class="medidor-aguja" id="medidor-aguja"></div>
-            </div>
-            <div class="medidor-etiquetas">
-                <span style="left:0">0 · sin riesgo</span>
-                <span style="left:100%">1 · fraude seguro</span>
+        <p class="vacio">Elige un caso arriba y aquí aparecerá la decisión del modelo.</p>
+    </section>
+
+    <section class="tarjeta oculto" id="compras">
+        <div class="encabezado-compras">
+            <div>
+                <h2>2. Compras de la tarjeta</h2>
+                <p class="ayuda">
+                    Se evalúa la compra más reciente (resaltada). Las anteriores le dan contexto al modelo.
+                    Cambia un monto, la categoría o la hora y vuelve a evaluar.
+                </p>
             </div>
         </div>
-        <p id="explicacion"></p>
-        <span id="detalles"></span>
+        <div class="tabla-contenedor">
+            <table>
+                <thead>
+                <tr><th>#</th><th>Monto (Q)</th><th>Tipo de comercio</th><th>Fecha y hora</th><th></th></tr>
+                </thead>
+                <tbody id="filas"></tbody>
+            </table>
+        </div>
+        <div class="acciones">
+            <button type="button" class="btn principal" id="btn-evaluar">Evaluar</button>
+            <button type="button" class="btn" id="btn-agregar">Agregar compra</button>
+        </div>
     </section>
 
     <footer>
@@ -299,30 +310,30 @@
         travel: "Viajes",
     };
     const MAX_TRANSACCIONES = 20;
-    const TEXTO_BOTON = "Evaluar transacción más reciente";
+    const ICONO_APROBAR = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    const ICONO_BLOQUEAR = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 6v8M12 18.5h.01"/></svg>';
 
     let categorias = Object.keys(NOMBRES);  // se reemplaza con GET /categorias
-    const filas = document.getElementById("filas");
+    const $ = id => document.getElementById(id);
+    const filas = $("filas");
 
     function opcionesCategoria(seleccionada) {
-        return categorias.map(c => {
-            const nombre = NOMBRES[c] || c;
-            return `<option value="${c}"${c === seleccionada ? " selected" : ""}>${nombre}</option>`;
-        }).join("");
+        return categorias.map(c =>
+            `<option value="${c}"${c === seleccionada ? " selected" : ""}>${NOMBRES[c] || c}</option>`).join("");
     }
 
     function agregarFila(tx = {}) {
         if (filas.children.length >= MAX_TRANSACCIONES) {
-            mostrarError(`El modelo acepta como máximo ${MAX_TRANSACCIONES} transacciones.`);
+            mostrarError(`El modelo acepta como máximo ${MAX_TRANSACCIONES} compras.`);
             return;
         }
         const fila = document.createElement("tr");
         fila.innerHTML = `
             <td class="num"><span class="n"></span><span class="etiqueta-evaluada">se evalúa</span></td>
-            <td><input type="number" class="monto" min="0.01" step="0.01" required value="${tx.monto ?? ""}"></td>
+            <td><input type="number" class="monto" min="0.01" step="0.01" placeholder="0.00" value="${tx.monto ?? ""}"></td>
             <td><select class="categoria">${opcionesCategoria(tx.categoria)}</select></td>
-            <td><input type="datetime-local" class="fecha" step="1" required value="${tx.fecha_hora ?? ""}"></td>
-            <td><button type="button" class="quitar" title="Quitar">✕</button></td>`;
+            <td><input type="datetime-local" class="fecha" step="1" value="${tx.fecha_hora ?? ""}"></td>
+            <td><button type="button" class="quitar" title="Quitar esta compra">Quitar</button></td>`;
         fila.querySelector(".quitar").addEventListener("click", () => { fila.remove(); actualizarTabla(); });
         fila.querySelectorAll("input, select").forEach(el => el.addEventListener("change", actualizarTabla));
         filas.appendChild(fila);
@@ -332,10 +343,14 @@
     function cargar(transacciones) {
         filas.innerHTML = "";
         transacciones.forEach(agregarFila);
-        ocultarResultado();
+        $("compras").classList.remove("oculto");
     }
 
-    // Numera las filas y marca la transacción más reciente, que es la que evalúa el modelo.
+    function marcarCaso(id) {
+        document.querySelectorAll(".caso").forEach(b => b.classList.toggle("activo", b.id === id));
+    }
+
+    // Numera las filas y marca la compra más reciente, que es la que evalúa el modelo.
     function actualizarTabla() {
         let masReciente = null;
         [...filas.children].forEach((fila, i) => {
@@ -352,70 +367,69 @@
         for (const [i, fila] of [...filas.children].entries()) {
             const monto = parseFloat(fila.querySelector(".monto").value);
             let fecha = fila.querySelector(".fecha").value;
-            if (!(monto > 0)) throw new Error(`Fila ${i + 1}: el monto debe ser mayor que 0.`);
-            if (!fecha) throw new Error(`Fila ${i + 1}: falta la fecha y hora.`);
+            if (!(monto > 0)) throw new Error(`Compra ${i + 1}: escribe un monto mayor que 0.`);
+            if (!fecha) throw new Error(`Compra ${i + 1}: falta la fecha y hora.`);
             if (fecha.length === 16) fecha += ":00";  // el navegador omite los segundos cuando son 00
             transacciones.push({ monto, categoria: fila.querySelector(".categoria").value, fecha_hora: fecha });
         }
-        if (transacciones.length === 0) throw new Error("Agregue al menos una transacción.");
+        if (transacciones.length === 0) throw new Error("Agrega al menos una compra.");
         return transacciones;
     }
 
     function mostrarError(mensaje) {
-        const caja = document.getElementById("error");
-        caja.textContent = "⚠ " + mensaje;
-        caja.style.display = "block";
-    }
-
-    function ocultarResultado() {
-        document.getElementById("error").style.display = "none";
-        document.getElementById("resultado").className = "tarjeta";
+        $("error").textContent = mensaje;
+        $("error").style.display = "block";
     }
 
     // Escala de raíz cuadrada: el umbral (0.025) es tan bajo que en escala lineal quedaría pegado al cero.
     const posicion = p => Math.sqrt(Math.min(Math.max(p, 0), 1)) * 100;
+    const pct = x => (x * 100).toLocaleString("es-GT", { maximumFractionDigits: 1 }) + " %";
+
+    function mostrarCargando() {
+        $("resultado").className = "tarjeta";
+        $("resultado").innerHTML = `<div class="cargando"><span class="girando"></span>
+            Evaluando… si el servicio estaba dormido puede tardar hasta un minuto.</div>`;
+    }
 
     function mostrarResultado(r) {
         const bloquear = r.decision === "bloquear";
-        const pct = (r.puntaje * 100).toLocaleString("es-GT", { maximumFractionDigits: 2 });
-        const umbralPct = (r.umbral * 100).toLocaleString("es-GT", { maximumFractionDigits: 2 });
-        const resultado = document.getElementById("resultado");
+        const resultado = $("resultado");
         resultado.className = "tarjeta " + r.decision;
-        document.getElementById("icono").textContent = bloquear ? "!" : "✓";
-        document.getElementById("decision").textContent = bloquear ? "BLOQUEAR" : "APROBAR";
-        document.getElementById("puntaje").innerHTML =
-            `Puntaje de riesgo: <strong>${r.puntaje.toFixed(3)}</strong> (${pct} %)`;
-
-        document.getElementById("medidor-umbral").style.left = posicion(r.umbral) + "%";
-        const etiquetaUmbral = document.getElementById("etiqueta-umbral");
-        etiquetaUmbral.style.left = posicion(r.umbral) + "%";
-        etiquetaUmbral.textContent = `umbral ${r.umbral}`;
-        const aguja = document.getElementById("medidor-aguja");
-        aguja.style.left = "0%";
-        requestAnimationFrame(() => requestAnimationFrame(() => { aguja.style.left = posicion(r.puntaje) + "%"; }));
-
-        document.getElementById("explicacion").textContent = bloquear
-            ? `El patrón de esta compra se parece al de un fraude. El puntaje supera el umbral de ${r.umbral} (${umbralPct} %), ` +
-              "así que se recomienda bloquearla y confirmar con el cliente. El umbral es bajo a propósito: " +
-              "dejar pasar un fraude cuesta en promedio Q4,200 y bloquear a un cliente legítimo, solo Q180."
-            : `El patrón de esta compra es consistente con el historial de la tarjeta. El puntaje está por debajo ` +
-              `del umbral de ${r.umbral} (${umbralPct} %), así que se recomienda aprobarla.`;
-        document.getElementById("detalles").textContent =
-            `Predicción #${r.id_prediccion ?? "—"} · modelo ${r.version_modelo} · ` +
-            `procesada en ${r.latencia_ms.toFixed(1)} ms`;
-        resultado.scrollIntoView({ behavior: "smooth", block: "center" });
+        resultado.innerHTML = `
+            <div class="icono">${bloquear ? ICONO_BLOQUEAR : ICONO_APROBAR}</div>
+            <p id="decision">${bloquear ? "BLOQUEAR" : "APROBAR"}</p>
+            <p id="frase">${bloquear
+                ? "Esta compra no se parece a las anteriores de la tarjeta. Se recomienda bloquearla y confirmar con el cliente."
+                : "Esta compra es consistente con el historial de la tarjeta. Se puede aprobar."}</p>
+            <div class="medidor" aria-hidden="true">
+                <div class="medidor-titulo"><span>Nivel de riesgo</span><strong>${pct(r.puntaje)}</strong></div>
+                <div class="medidor-arriba"><span style="left:${posicion(r.umbral)}%">se bloquea desde ${pct(r.umbral)}</span></div>
+                <div class="medidor-barra">
+                    <div class="medidor-umbral" style="left:${posicion(r.umbral)}%"></div>
+                    <div class="medidor-aguja" id="aguja"></div>
+                </div>
+                <div class="medidor-extremos"><span>Riesgo bajo</span><span>Riesgo alto</span></div>
+            </div>
+            <details class="porque">
+                <summary>¿Por qué se bloquea desde un riesgo tan bajo?</summary>
+                <p>Dejar pasar un fraude le cuesta al banco en promedio <b>Q4,200</b>; bloquear por error a un cliente
+                legítimo cuesta unos <b>Q180</b>. Como un fraude cuesta 23 veces más, conviene bloquear ante la menor
+                sospecha. El límite de ${pct(r.umbral)} es el que dio el menor costo total con datos de validación.</p>
+            </details>
+            <p id="detalles">Puntaje ${r.puntaje.toFixed(4)} · predicción #${r.id_prediccion ?? "—"} ·
+                modelo ${r.version_modelo} · ${r.latencia_ms.toFixed(1)} ms</p>`;
+        setTimeout(() => { $("aguja").style.left = posicion(r.puntaje) + "%"; }, 50);
+        resultado.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function mensajeDeError(cuerpo, estado) {
         if (cuerpo && typeof cuerpo.detail === "string") return cuerpo.detail;
-        if (cuerpo && Array.isArray(cuerpo.detail)) {
-            return "Revise los datos: " + cuerpo.detail.map(d => d.msg).join("; ");
-        }
+        if (cuerpo && Array.isArray(cuerpo.detail)) return "Revisa los datos: " + cuerpo.detail.map(d => d.msg).join("; ");
         return `El servicio respondió con un error (${estado}).`;
     }
 
     async function evaluar() {
-        ocultarResultado();
+        $("error").style.display = "none";
         let transacciones;
         try {
             transacciones = leerTransacciones();
@@ -423,9 +437,9 @@
             mostrarError(e.message);
             return;
         }
-        const boton = document.getElementById("btn-evaluar");
+        const boton = $("btn-evaluar");
         boton.disabled = true;
-        boton.innerHTML = '<span class="girando"></span>Evaluando…';
+        mostrarCargando();
         try {
             const respuesta = await fetch("/predict", {
                 method: "POST",
@@ -436,10 +450,11 @@
             if (!respuesta.ok) throw new Error(mensajeDeError(cuerpo, respuesta.status));
             mostrarResultado(cuerpo);
         } catch (e) {
-            mostrarError(e instanceof TypeError ? "No se pudo conectar con el servicio. Intente de nuevo." : e.message);
+            $("resultado").className = "tarjeta";
+            $("resultado").innerHTML = '<p class="vacio">No se obtuvo una decisión.</p>';
+            mostrarError(e instanceof TypeError ? "No se pudo conectar con el servicio. Intenta de nuevo." : e.message);
         } finally {
             boton.disabled = false;
-            boton.textContent = TEXTO_BOTON;
         }
     }
 
@@ -453,13 +468,19 @@
         filas.querySelectorAll(".categoria").forEach(sel => { sel.innerHTML = opcionesCategoria(sel.value); });
     }
 
-    document.getElementById("btn-normal").addEventListener("click", () => cargar(EJEMPLO_NORMAL));
-    document.getElementById("btn-sospechoso").addEventListener("click", () => cargar(EJEMPLO_SOSPECHOSO));
-    document.getElementById("btn-agregar").addEventListener("click", () => agregarFila());
-    document.getElementById("btn-limpiar").addEventListener("click", () => cargar([]));
-    document.getElementById("btn-evaluar").addEventListener("click", evaluar);
+    $("caso-normal").addEventListener("click", () => { marcarCaso("caso-normal"); cargar(EJEMPLO_NORMAL); evaluar(); });
+    $("caso-sospechoso").addEventListener("click", () => { marcarCaso("caso-sospechoso"); cargar(EJEMPLO_SOSPECHOSO); evaluar(); });
+    $("caso-propio").addEventListener("click", () => {
+        marcarCaso(null);
+        cargar([{}]);
+        $("resultado").className = "tarjeta";
+        $("resultado").innerHTML = '<p class="vacio">Llena la compra de abajo y presiona "Evaluar".</p>';
+        $("compras").scrollIntoView({ behavior: "smooth", block: "start" });
+        filas.querySelector(".monto").focus({ preventScroll: true });
+    });
+    $("btn-agregar").addEventListener("click", () => agregarFila());
+    $("btn-evaluar").addEventListener("click", evaluar);
 
-    cargar(EJEMPLO_NORMAL);
     cargarCategorias();
 </script>
 </body>
