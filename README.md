@@ -7,7 +7,8 @@ Servicio que recibe las transacciones recientes de una tarjeta y devuelve, en l�
 y la decisión **aprobar / bloquear**. El modelo es una LSTM con embedding de categoría de comercio (Modelo C del
 Proyecto 1), corregida y reentrenada para producción.
 
-- **Servicio en línea:** <https://fraude-tarjeta.onrender.com> (plan gratuito: si estuvo inactivo, la primera carga tarda ~1 min)
+- **Servicio en línea (página para probar el modelo):** <https://fraude-tarjeta.onrender.com> (plan gratuito: si estuvo inactivo, la primera carga tarda ~1 min)
+- **Panel de monitoreo:** <https://fraude-tarjeta.onrender.com/monitoreo.html>
 - **Documentación interactiva de la API:** <https://fraude-tarjeta.onrender.com/docs> · **Monitoreo:** <https://fraude-tarjeta.onrender.com/monitoreo>
 - **Presentación:** [`docs/presentacion.pdf`](docs/presentacion.pdf) _TODO (Anggie)_
 
@@ -15,25 +16,67 @@ Proyecto 1), corregida y reentrenada para producción.
 
 ## 1. Problemática
 
-> _TODO (Anggie)._ Responder en 1–2 párrafos: **cuál es el problema** (fraude con tarjeta), **quién es el usuario**
-> (el área de riesgos del banco, o el sistema de autorización que la llama) y **qué decisión depende del modelo**
-> (aprobar o bloquear una transacción en el momento). Incluir lo que cuesta equivocarse: un fraude no detectado
-> cuesta en promedio **Q4,200** y bloquear a un cliente legítimo, **Q180**.
+**El problema.** Cuando alguien paga con tarjeta, el banco tiene unos milisegundos para decidir si **aprueba** o
+**bloquea** la transacción. Si aprueba un fraude, el banco absorbe la pérdida (en promedio **Q4,200** por fraude no
+detectado: monto robado, contracargo y gestión). Si bloquea una compra legítima, pierde menos dinero (**Q180** en
+promedio: atención al cliente, la venta perdida y el riesgo de que el cliente deje de usar la tarjeta), pero molesta a
+un cliente bueno. El fraude es raro (0.58 % de las transacciones en los datos), así que revisar todo a mano es
+imposible y una regla fija (por ejemplo, "bloquear todo arriba de Q500") se equivoca en ambos sentidos: los
+defraudadores suelen hacer compras de montos normales, y los clientes a veces hacen compras grandes.
+
+**El usuario y la decisión.** El usuario es el **área de riesgos del banco**, a través del **sistema de autorización**
+que llama a este servicio en cada compra. El servicio recibe las últimas transacciones de la tarjeta, devuelve un
+**puntaje de riesgo** de 0 a 1 y la decisión: **bloquear** si el puntaje es ≥ 0.025 o **aprobar** si no. El modelo
+no mira solo la compra actual, sino **la secuencia**: qué se compró antes, cuánto, a qué hora y cuánto tiempo pasó
+entre compras. Como un fraude cuesta **23 veces más** que un bloqueo, el umbral está elegido para minimizar el costo
+total y no para "acertar más": conviene bloquear de más a dejar pasar fraudes. Para que alguien sin conocimientos técnicos
+lo pruebe, la [página web](https://fraude-tarjeta.onrender.com) permite cargar un ejemplo, editar las transacciones y ver la decisión con
+una explicación.
 
 ## 2. Planificación
 
-> _TODO (Anggie)._ Tabla de etapas, fechas y responsables. Partir de [`docs/plan_trabajo.md`](docs/plan_trabajo.md)
-> y actualizarla con las fechas reales en que se terminó cada cosa.
+Trabajamos por turnos sobre `main`, un integrante a la vez, con el plan y el contrato de la API definidos desde el
+inicio ([`docs/plan_trabajo.md`](docs/plan_trabajo.md)). Fechas reales tomadas del historial de commits:
+
+| Etapa                                                                                | Responsable    | Planeado      | Terminado       |
+| ------------------------------------------------------------------------------------ | -------------- | ------------- | --------------- |
+| Elegir el modelo (C del Proyecto 1) y revisar su método                              | Todos          | 6 nov         | 6 nov           |
+| Estructura del repo, pipeline de entrenamiento e hipótesis pre-registradas           | Iris           | 6 nov         | 6 nov           |
+| Reentrenamiento C v2, evaluación contra líneas base, README secciones 4–5           | Iris           | 6 nov         | 6 nov           |
+| API: `POST /predict` y `GET /categorias` con sus tests                               | Iris           | 6 nov         | 6 nov           |
+| Registro en SQLite, `GET /monitoreo`, Docker y GitHub Actions                        | Erick          | 7–8 nov       | 6 nov (noche)   |
+| Despliegue en Render, ajuste de latencia, README secciones 6–7 y H3                  | Erick          | 8 nov         | 7 nov           |
+| Interfaz web (`/`) y página de monitoreo (`/monitoreo.html`)                         | Anggie         | 8 nov         | 8 nov           |
+| README secciones 1–3                                                                 | Anggie         | 8 nov         | 8 nov           |
+| Pruebas con al menos 5 usuarios externos y capturas                                  | Anggie         | 8 nov         | _pendiente_     |
+| Presentación PDF                                                                     | Anggie         | 8 nov         | _pendiente_     |
+| Ensayo con preguntas cruzadas                                                        | Todos          | 8 nov (noche) | _pendiente_     |
+| **Presentación ante el comité**                                                      | Todos          | 9 o 13 nov    | _pendiente_     |
+| Ajustes según retroalimentación                                                      | Todos          | hasta 15 nov  | _pendiente_     |
 
 ## 3. Supuestos
 
-> _TODO (Anggie)._ Una viñeta por supuesto, con su consecuencia si no se cumple. Mínimo:
->
-> - **Datos:** Sparkov es un conjunto **simulado**; el fraude real puede verse distinto.
-> - **Usuario/entrada:** quien llama a la API envía las últimas transacciones de la tarjeta (hasta 20; la última es la
->   que se evalúa), con fecha y hora **local** de la transacción y una de las 14 categorías conocidas.
-> - **Costos:** Q4,200 y Q180 son fijos y promedio; si cambian, cambia el umbral óptimo.
-> - **Entorno:** el servicio corre en CPU; sin GPU; una tarjeta nueva (sin historial) se evalúa con lo que haya.
+- **Datos.** Sparkov es un conjunto **simulado** (983 tarjetas, 2019–2020). Suponemos que la forma del fraude
+  (compras de madrugada, montos altos en ciertas categorías, ráfagas después de un periodo normal) se parece a la real.
+  _Si no se cumple:_ el AUC-PR de 0.989 no se trasladaría a datos reales; antes de usarlo en un banco habría que
+  reentrenar y validar con su historial.
+- **Estabilidad del fraude.** Suponemos que el fraude futuro se parece al del periodo de entrenamiento.
+  _Si no se cumple:_ aparecen patrones nuevos que el modelo no conoce y el recall baja. `/monitoreo` lo vigila
+  comparando la tasa de bloqueo, los montos y las categorías contra la referencia de entrenamiento.
+- **Entrada.** Quien llama a la API envía las últimas transacciones **de una sola tarjeta** (de 1 a 20; la más reciente
+  por fecha es la que se evalúa), con fecha y hora **local** de la transacción, monto en quetzales y una de las
+  **14 categorías** conocidas. _Si no se cumple:_ una categoría nueva o un monto ≤ 0 se rechazan con 422; si se mezclan
+  tarjetas o la hora viene en otra zona horaria, el puntaje pierde sentido sin que el servicio lo detecte.
+- **Montos.** El modelo se entrenó con montos de Sparkov (en dólares) y los tratamos como quetzales.
+  _Si no se cumple:_ con montos reales en quetzales (≈ 7.7 veces mayores) todo parecería "más caro" de lo normal;
+  habría que reentrenar con montos locales.
+- **Costos.** Q4,200 por fraude no detectado y Q180 por bloqueo legítimo son **promedios fijos**.
+  _Si no se cumple:_ si cambian (o dependen del monto), cambia el umbral óptimo; el pipeline permite recalcularlo en validación.
+- **Historial.** Una tarjeta nueva, con pocas transacciones, se evalúa con lo que haya (el resto de la ventana se
+  rellena). _Si no se cumple:_ con poco historial el modelo tiene menos contexto y es menos confiable.
+- **Entorno.** El servicio corre en CPU, sin GPU, en un plan gratuito que se duerme tras 15 minutos sin uso y borra el
+  disco al reiniciar. _Si no se cumple_ (por ejemplo, en producción real): habría que usar una base de datos
+  persistente y un servidor siempre encendido; el código ya separa la persistencia en `app/repositories/` para ese cambio.
 
 ## 4. Modelo planteado
 
