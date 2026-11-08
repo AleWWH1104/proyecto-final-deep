@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 import numpy as np
 from fastapi import FastAPI
 
+from app.api import rutas_web
 from app.api.rutas import router
 from app.core.config import get_settings
 from app.ml.cargador import cargar_artefactos
@@ -24,3 +25,4 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title=get_settings().nombre_app, lifespan=lifespan)
 app.include_router(router)
+app.include_router(rutas_web.router)
