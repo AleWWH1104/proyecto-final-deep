@@ -318,4 +318,4 @@ Semilla fija (42); la partición y todos los ajustes se recalculan desde el CSV.
 > - **Iris:** Claude Code para revisar el método del Proyecto 1 (detectó los 4 problemas de la sección 4), estructurar el
 >   pipeline de entrenamiento y redactar borradores de las secciones 4 y 5. Revisamos y ejecutamos todo el código.
 > - **Erick:** Claude Code como ayuda para el desarrollo y revisión de código, así como para el despliegue de la API. También ayudó a tomar la decisión de migrar a Render debido a que Hugging Face no permite utilizar Docker en cuentas gratuitas.
-> - **Anggie:** Claude Code como ayuda para construir la interfaz web (página para evaluar transacciones y panel de monitoreo) y sus tests, y para redactar borradores de las secciones 1–3 del README a partir del plan de trabajo y del historial del repositorio. Revisamos el texto y probamos las páginas contra el servicio.
+> - **Anggie:** Claude Code para revisar la interfaz web y apoyo en sus tests. apoyo en redacción de borradores de las secciones 1–3 del README a partir del plan de trabajo y del historial del repositorio.
