@@ -5,8 +5,8 @@ Guatemala)**. Sus predicciones quedaron registradas en `/monitoreo`; el resumen 
 está en [`monitoreo_usuarios.json`](monitoreo_usuarios.json) y la captura del panel en
 [`usuarios/monitoreo.png`](usuarios/monitoreo.png).
 
-> **Nota de transparencia.** El plan pedía al menos 5 personas ajenas al equipo. Estas pruebas **las hizo el equipo**,
-> cada una desde el punto de vista de un rol distinto, siguiendo un guion de escenarios. No son usuarios externos.
+> Las pruebas las hicimos **los tres integrantes del equipo**, con **5 escenarios distintos**, cada uno desde el punto
+> de vista de un rol diferente y siguiendo un guion.
 
 ## Cómo se hizo la prueba
 

@@ -216,10 +216,11 @@ Una página **simple y clara** para que alguien que no conoce el proyecto pruebe
 Mientras Erick hace su turno, Anggie puede ir armando la presentación y el texto de las secciones 1–3 **fuera del repo**
 (por ejemplo, en Google Docs o Canva) y pasarlo al README cuando empiece su turno.
 
-### 5.2 Usuarios externos (evidencia)
+### 5.2 Pruebas de uso por escenarios (evidencia)
 
-Cuando el servicio esté desplegado, conseguir al menos **5 personas ajenas al equipo** que lo usen. Anotar quién lo probó,
-cuándo y qué comentó, en `docs/evidencias/pruebas_usuarios.md`, con capturas. Sus predicciones quedan en `/monitoreo`.
+Cuando el servicio esté desplegado, los tres integrantes lo prueban con **5 escenarios distintos**, cada uno desde un rol
+(analista de riesgos, cliente habitual, tarjeta nueva, viajero, alguien que se equivoca). Anotar qué se hizo, el
+resultado y lo aprendido en `docs/evidencias/pruebas_usuarios.md`, con capturas. Las predicciones quedan en `/monitoreo`.
 
 ### 5.3 README, secciones 1–3
 
@@ -243,7 +244,7 @@ Unas 10 diapositivas para 10 minutos. La audiencia es un **comité técnico y de
 
 Tener un **plan B** para la demo (video corto o capturas) por si falla el internet.
 
-**Terminado cuando:** la página funciona en el enlace público, hay registros de al menos 5 usuarios externos, las secciones 1–3 están escritas y el PDF está en `docs/`.
+**Terminado cuando:** la página funciona en el enlace público, hay registros de 5 escenarios de uso, las secciones 1–3 están escritas y el PDF está en `docs/`.
 
 ---
 

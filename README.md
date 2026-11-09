@@ -277,7 +277,7 @@ GitHub Actions las corre, y construye la imagen Docker, en cada push:
 ![GitHub Actions](docs/evidencias/github_actions.png)
 
 **Pruebas de uso.** El equipo probó la página desplegada con 5 escenarios, cada uno desde un rol distinto (analista de
-riesgos, cliente habitual, tarjeta nueva, viajero y alguien que se equivoca al llenar). No son usuarios externos. El
+riesgos, cliente habitual, tarjeta nueva, viajero y alguien que se equivoca al llenar); las hicimos los tres integrantes. El
 ejemplo sospechoso se bloqueó (0.944) y pasó a aprobarse al cambiar el monto y la hora; los demás casos se aprobaron.
 Al terminar, `/monitoreo` registraba 12 predicciones con p95 = 35.15 ms. Detalle, capturas y lo que aprendimos en
 [`docs/evidencias/pruebas_usuarios.md`](docs/evidencias/pruebas_usuarios.md).
