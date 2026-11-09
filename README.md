@@ -10,7 +10,7 @@ Proyecto 1), corregida y reentrenada para producción.
 - **Servicio en línea (página para probar el modelo):** <https://fraude-tarjeta.onrender.com> (plan gratuito: si estuvo inactivo, la primera carga tarda ~1 min)
 - **Panel de monitoreo:** <https://fraude-tarjeta.onrender.com/monitoreo.html>
 - **Documentación interactiva de la API:** <https://fraude-tarjeta.onrender.com/docs> · **Monitoreo:** <https://fraude-tarjeta.onrender.com/monitoreo>
-- **Presentación:** [`docs/presentacion.pdf`](docs/presentacion.pdf) _TODO (Anggie)_
+- **Presentación:** [`docs/presentacion.pdf`](docs/presentacion.pdf)
 
 ---
 
@@ -49,7 +49,7 @@ inicio ([`docs/plan_trabajo.md`](docs/plan_trabajo.md)). Fechas reales tomadas d
 | Interfaz web (`/`) y página de monitoreo (`/monitoreo.html`)                         | Anggie         | 8 nov         | 8 nov           |
 | README secciones 1–3                                                                 | Anggie         | 8 nov         | 8 nov           |
 | Pruebas de uso por escenarios (5 roles, hechas por el equipo) y capturas             | Erick          | 8 nov         | 8 nov           |
-| Presentación PDF                                                                     | Anggie         | 8 nov         | _pendiente_     |
+| Presentación PDF                                                                     | Anggie         | 8 nov         | 8 nov           |
 | Ensayo con preguntas cruzadas                                                        | Todos          | 8 nov (noche) | _pendiente_     |
 | **Presentación ante el comité**                                                      | Todos          | 9 o 13 nov    | _pendiente_     |
 | Ajustes según retroalimentación                                                      | Todos          | hasta 15 nov  | _pendiente_     |
