@@ -48,7 +48,7 @@ inicio ([`docs/plan_trabajo.md`](docs/plan_trabajo.md)). Fechas reales tomadas d
 | Despliegue en Render, ajuste de latencia, README secciones 6–7 y H3                  | Erick          | 8 nov         | 7 nov           |
 | Interfaz web (`/`) y página de monitoreo (`/monitoreo.html`)                         | Anggie         | 8 nov         | 8 nov           |
 | README secciones 1–3                                                                 | Anggie         | 8 nov         | 8 nov           |
-| Pruebas con al menos 5 usuarios externos y capturas                                  | Anggie         | 8 nov         | _pendiente_     |
+| Pruebas de uso por escenarios (5 roles, hechas por el equipo) y capturas             | Erick          | 8 nov         | 8 nov           |
 | Presentación PDF                                                                     | Anggie         | 8 nov         | _pendiente_     |
 | Ensayo con preguntas cruzadas                                                        | Todos          | 8 nov (noche) | _pendiente_     |
 | **Presentación ante el comité**                                                      | Todos          | 9 o 13 nov    | _pendiente_     |
@@ -270,14 +270,19 @@ vuelta completa por internet fue de ~234 ms de mediana (máximo 322 ms en 20 pet
 en el plan gratuito (fracción de CPU) PyTorch usa un solo hilo y el modelo se "calienta" al arrancar; sin eso, la primera
 petición tardaba ~700 ms y aparecían picos de hasta 4 s.
 
-**Pruebas automáticas.** `uv run pytest` corre 30 pruebas: contrato de la API, entradas inválidas (422), que el modelo de
+**Pruebas automáticas.** `uv run pytest` corre 32 pruebas: contrato de la API, entradas inválidas (422), que el modelo de
 producción reproduzca los ejemplos, que entrenamiento y servicio armen la misma ventana, y el registro y monitoreo.
 GitHub Actions las corre, y construye la imagen Docker, en cada push:
 
 ![GitHub Actions](docs/evidencias/github_actions.png)
 
-> _TODO (Anggie)._ Capturas de la interfaz web y registro de los usuarios externos
-> ([`docs/evidencias/pruebas_usuarios.md`](docs/evidencias/pruebas_usuarios.md)).
+**Pruebas de uso.** El equipo probó la página desplegada con 5 escenarios, cada uno desde un rol distinto (analista de
+riesgos, cliente habitual, tarjeta nueva, viajero y alguien que se equivoca al llenar). No son usuarios externos. El
+ejemplo sospechoso se bloqueó (0.944) y pasó a aprobarse al cambiar el monto y la hora; los demás casos se aprobaron.
+Al terminar, `/monitoreo` registraba 12 predicciones con p95 = 35.15 ms. Detalle, capturas y lo que aprendimos en
+[`docs/evidencias/pruebas_usuarios.md`](docs/evidencias/pruebas_usuarios.md).
+
+![Interfaz web: compra sospechosa bloqueada](docs/evidencias/usuarios/escenario1.png)
 
 ---
 
@@ -313,9 +318,7 @@ Semilla fija (42); la partición y todos los ajustes se recalculan desde el CSV.
 
 ## Uso de inteligencia artificial
 
-> _TODO (los tres)._ Cada integrante declara para qué usó asistentes de IA. Ejemplo:
->
 > - **Iris:** Claude Code para revisar el método del Proyecto 1 (detectó los 4 problemas de la sección 4), estructurar el
 >   pipeline de entrenamiento y redactar borradores de las secciones 4 y 5. Revisamos y ejecutamos todo el código.
 > - **Erick:** Claude Code como ayuda para el desarrollo y revisión de código, así como para el despliegue de la API. También ayudó a tomar la decisión de migrar a Render debido a que Hugging Face no permite utilizar Docker en cuentas gratuitas.
-> - **Anggie:** Claude Code para revisar la interfaz web y apoyo en sus tests. apoyo en redacción de borradores de las secciones 1–3 del README a partir del plan de trabajo y del historial del repositorio.
+> - **Anggie:** Claude Code para revisar la interfaz web y apoyo en sus tests. Apoyo en redacción de borradores de las secciones 1–3 del README a partir del plan de trabajo y del historial del repositorio.

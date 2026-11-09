@@ -1,0 +1,115 @@
+{
+  "total_predicciones": 12,
+  "tasa_bloqueo": 0.1667,
+  "tasa_bloqueo_referencia": 0.0068,
+  "monto_mediana": 61.06,
+  "monto_mediana_referencia": 47.41,
+  "latencia_p50_ms": 1.27,
+  "latencia_p95_ms": 35.15,
+  "frecuencia_categorias": {
+    "entertainment": 0,
+    "food_dining": 0.0833,
+    "gas_transport": 0,
+    "grocery_net": 0,
+    "grocery_pos": 0.25,
+    "health_fitness": 0,
+    "home": 0,
+    "kids_pets": 0,
+    "misc_net": 0,
+    "misc_pos": 0,
+    "personal_care": 0,
+    "shopping_net": 0.5,
+    "shopping_pos": 0,
+    "travel": 0.1667
+  },
+  "frecuencia_categorias_referencia": {
+    "entertainment": 0.0724,
+    "food_dining": 0.071,
+    "gas_transport": 0.1015,
+    "grocery_net": 0.0349,
+    "grocery_pos": 0.0952,
+    "health_fitness": 0.0661,
+    "home": 0.0949,
+    "kids_pets": 0.0874,
+    "misc_net": 0.0488,
+    "misc_pos": 0.0614,
+    "personal_care": 0.0702,
+    "shopping_net": 0.0751,
+    "shopping_pos": 0.0899,
+    "travel": 0.0313
+  },
+  "ultimas_predicciones": [
+    {
+      "id": 12,
+      "fecha": "2026-11-08T23:57:38+00:00",
+      "puntaje": 0.00006694225157843903,
+      "decision": "aprobar"
+    },
+    {
+      "id": 11,
+      "fecha": "2026-11-08T23:56:29+00:00",
+      "puntaje": 2.5615729537520338e-9,
+      "decision": "aprobar"
+    },
+    {
+      "id": 10,
+      "fecha": "2026-11-08T23:55:17+00:00",
+      "puntaje": 0.00006672912422800437,
+      "decision": "aprobar"
+    },
+    {
+      "id": 9,
+      "fecha": "2026-11-08T23:54:39+00:00",
+      "puntaje": 2.5615729537520338e-9,
+      "decision": "aprobar"
+    },
+    {
+      "id": 8,
+      "fecha": "2026-11-08T23:54:29+00:00",
+      "puntaje": 2.5615729537520338e-9,
+      "decision": "aprobar"
+    },
+    {
+      "id": 7,
+      "fecha": "2026-11-08T23:54:14+00:00",
+      "puntaje": 0.00000726549478713423,
+      "decision": "aprobar"
+    },
+    {
+      "id": 6,
+      "fecha": "2026-11-08T23:53:49+00:00",
+      "puntaje": 0.9440014362335205,
+      "decision": "bloquear"
+    },
+    {
+      "id": 5,
+      "fecha": "2026-11-08T23:52:21+00:00",
+      "puntaje": 0.9440014362335205,
+      "decision": "bloquear"
+    },
+    {
+      "id": 4,
+      "fecha": "2026-11-08T23:46:30+00:00",
+      "puntaje": 2.5615729537520338e-9,
+      "decision": "aprobar"
+    },
+    {
+      "id": 3,
+      "fecha": "2026-11-08T23:45:38+00:00",
+      "puntaje": 0.0013789311051368713,
+      "decision": "aprobar"
+    },
+    {
+      "id": 2,
+      "fecha": "2026-11-08T23:44:23+00:00",
+      "puntaje": 2.5615729537520338e-9,
+      "decision": "aprobar"
+    },
+    {
+      "id": 1,
+      "fecha": "2026-11-08T23:43:42+00:00",
+      "puntaje": 2.5615729537520338e-9,
+      "decision": "aprobar"
+    }
+  ]
+}
